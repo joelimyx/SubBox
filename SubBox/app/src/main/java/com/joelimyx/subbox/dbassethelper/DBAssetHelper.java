@@ -1,7 +1,6 @@
-package com.joelimyx.subbox.asset;
+package com.joelimyx.subbox.dbassethelper;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
