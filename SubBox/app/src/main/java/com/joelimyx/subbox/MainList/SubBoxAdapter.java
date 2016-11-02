@@ -1,11 +1,14 @@
-package com.joelimyx.subbox;
+package com.joelimyx.subbox.MainList;
 
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
+
+import com.joelimyx.subbox.R;
+import com.joelimyx.subbox.Classes.SubBox;
 
 import java.util.List;
 
@@ -17,10 +20,13 @@ import butterknife.ButterKnife;
  */
 
 public class SubBoxAdapter extends RecyclerView.Adapter<SubBoxAdapter.SubBoxViewHolder> {
+    public static final String SELECTED_ID = "id";
     List<SubBox> mSubBoxes;
+    private OnItemSelectedListener mListener;
 
-    public SubBoxAdapter(List<SubBox> subBoxes) {
+    public SubBoxAdapter(List<SubBox> subBoxes, OnItemSelectedListener listener) {
         mSubBoxes = subBoxes;
+        mListener = listener;
     }
 
     @Override
@@ -30,9 +36,15 @@ public class SubBoxAdapter extends RecyclerView.Adapter<SubBoxAdapter.SubBoxView
     }
 
     @Override
-    public void onBindViewHolder(SubBoxViewHolder holder, int position) {
+    public void onBindViewHolder(SubBoxViewHolder holder, final int position) {
         holder.mNameText.setText(mSubBoxes.get(position).getName());
         holder.mPriceText.setText("$"+mSubBoxes.get(position).getPrice());
+        holder.mCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.onItemSelected(mSubBoxes.get(position).getId());
+            }
+        });
     }
 
     @Override
@@ -43,10 +55,15 @@ public class SubBoxAdapter extends RecyclerView.Adapter<SubBoxAdapter.SubBoxView
     static class SubBoxViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.name_text) TextView mNameText;
         @BindView(R.id.price_text) TextView mPriceText;
+        @BindView(R.id.cardview) CardView mCardView;
 
         public SubBoxViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
         }
+    }
+
+    public interface OnItemSelectedListener{
+        void onItemSelected(int id);
     }
 }

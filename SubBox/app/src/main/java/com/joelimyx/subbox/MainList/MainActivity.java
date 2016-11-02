@@ -1,5 +1,6 @@
-package com.joelimyx.subbox;
+package com.joelimyx.subbox.MainList;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,12 +13,15 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.joelimyx.subbox.Detail.DetailActivity;
+import com.joelimyx.subbox.R;
 import com.joelimyx.subbox.dbassethelper.DBAssetHelper;
+import com.joelimyx.subbox.dbassethelper.SubBoxHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnItemSelectedListener{
     @BindView(R.id.recyclerview) RecyclerView mRecyclerView;
 
     @Override
@@ -31,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
         GridLayoutManager manager = new GridLayoutManager(this,2, LinearLayoutManager.VERTICAL,false);
         mRecyclerView.setLayoutManager(manager);
-        mRecyclerView.setAdapter(new SubBoxAdapter(SubBoxHelper.getsInstance(this).getList()));
+        mRecyclerView.setAdapter(new SubBoxAdapter(SubBoxHelper.getsInstance(this).getSubBoxList(),this));
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -66,5 +70,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemSelected(int id) {
+
+        Intent intent = new Intent(this,DetailActivity.class);
+        intent.putExtra(SubBoxAdapter.SELECTED_ID,id);
+        startActivity(intent);
     }
 }

@@ -1,9 +1,11 @@
-package com.joelimyx.subbox;
+package com.joelimyx.subbox.dbassethelper;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.joelimyx.subbox.Classes.SubBox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,11 +53,11 @@ public class SubBoxHelper extends SQLiteOpenHelper {
         this.onCreate(db);
     }
 
-    public List<SubBox> getList(){
+    public List<SubBox> getSubBoxList(){
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(
                 ITEM_TABLE_NAME,
-                new String[]{COL_NAME,COL_PRICE,COL_DETAIL},
+                new String[]{COL_ID,COL_NAME,COL_PRICE,COL_DETAIL},
                 null,null,null,null,null,null);
         List<SubBox> list = new ArrayList<>();
         if (cursor.moveToFirst()){
@@ -63,11 +65,35 @@ public class SubBoxHelper extends SQLiteOpenHelper {
                 list.add(new SubBox(
                         cursor.getString(cursor.getColumnIndex(COL_NAME)),
                         cursor.getDouble(cursor.getColumnIndex(COL_PRICE)),
-                        cursor.getString(cursor.getColumnIndex(COL_DETAIL))));
+                        cursor.getString(cursor.getColumnIndex(COL_DETAIL)),
+                        cursor.getInt(cursor.getColumnIndex(COL_ID))));
                 cursor.moveToNext();
             }
         }
         cursor.close();
         return list;
+    }
+    public SubBox getSubBoxByID(int id){
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(
+                ITEM_TABLE_NAME,
+                new String[]{COL_ID,COL_NAME,COL_PRICE,COL_DETAIL},
+                COL_ID+" = ?",
+                new String[]{String.valueOf(id)},
+                null,null,null,null);
+
+        if (cursor.moveToFirst()) {
+            SubBox subBox = new SubBox(
+                    cursor.getString(cursor.getColumnIndex(COL_NAME)),
+                    cursor.getDouble(cursor.getColumnIndex(COL_PRICE)),
+                    cursor.getString(cursor.getColumnIndex(COL_DETAIL)),
+                    cursor.getInt(cursor.getColumnIndex(COL_ID)));
+            cursor.close();
+            return subBox;
+        }else {
+            cursor.close();
+            return null;
+        }
     }
 }
