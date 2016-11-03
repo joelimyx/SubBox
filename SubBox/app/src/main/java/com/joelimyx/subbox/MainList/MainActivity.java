@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.joelimyx.subbox.CheckOut.CheckOutActivity;
 import com.joelimyx.subbox.Detail.DetailActivity;
 import com.joelimyx.subbox.R;
 import com.joelimyx.subbox.dbassethelper.DBAssetHelper;
@@ -44,8 +45,8 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(getApplicationContext(),CheckOutActivity.class);
+                startActivity(intent);
             }
         });
     }

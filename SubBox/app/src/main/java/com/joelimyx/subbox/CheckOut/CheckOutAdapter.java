@@ -1,13 +1,12 @@
-package com.joelimyx.subbox.ShoppingCart;
+package com.joelimyx.subbox.CheckOut;
 
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.joelimyx.subbox.Classes.SubBox;
+import com.joelimyx.subbox.Classes.CheckOutItem;
 import com.joelimyx.subbox.R;
 
 import java.util.List;
@@ -21,10 +20,10 @@ import butterknife.ButterKnife;
 
 public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckOutViewHolder> {
 
-    List<SubBox> mSubBoxes;
+    List<CheckOutItem> mCheckOutItems;
 
-    public CheckOutAdapter(List<SubBox> subBoxes) {
-        mSubBoxes = subBoxes;
+    public CheckOutAdapter(List<CheckOutItem> checkOutItems) {
+        mCheckOutItems = checkOutItems;
     }
 
     @Override
@@ -36,17 +35,17 @@ public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckO
 
     @Override
     public void onBindViewHolder(CheckOutViewHolder holder, int position) {
-        holder.mCheckoutTitle.setText(mSubBoxes.get(position).getName());
-        double total = mSubBoxes.get(position).getPrice()*mSubBoxes.get(position).getCount();
+        holder.mCheckoutTitle.setText(mCheckOutItems.get(position).getName());
+        double total = mCheckOutItems.get(position).getSubtotalPrice()* mCheckOutItems.get(position).getCount();
         holder.mCheckoutPrice.setText("$"+total);
-        holder.mCountText.setText(mSubBoxes.get(position).getCount());
+        holder.mCountText.setText(mCheckOutItems.get(position).getCount());
         //Image or title onclick
 
     }
 
     @Override
     public int getItemCount() {
-        return mSubBoxes.size();
+        return mCheckOutItems.size();
     }
 
     static class CheckOutViewHolder extends RecyclerView.ViewHolder{

@@ -1,16 +1,21 @@
-package com.joelimyx.subbox.ShoppingCart;
+package com.joelimyx.subbox.CheckOut;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.joelimyx.subbox.Classes.CheckOutItem;
 import com.joelimyx.subbox.R;
+import com.joelimyx.subbox.dbassethelper.SubBoxHelper;
+
+import java.util.List;
 
 
 public class CheckOutFragment extends Fragment {
@@ -54,12 +59,27 @@ public class CheckOutFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        List<CheckOutItem> checkOutItems = SubBoxHelper.getsInstance(getContext()).getCheckoutList();
+
         RecyclerView recyclerview = (RecyclerView) view.findViewById(R.id.checkout_recyclerview);
         TextView subtotalText = (TextView) view.findViewById(R.id.subtotal_text);
         TextView taxText= (TextView) view.findViewById(R.id.tax_text);
         TextView totalText= (TextView) view.findViewById(R.id.total_text);
 
+        LinearLayoutManager manager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
+        recyclerview.setLayoutManager(manager);
+        recyclerview.setAdapter(new CheckOutAdapter(checkOutItems));
 
+        double subTotal= 0f;
+        for (CheckOutItem item: checkOutItems) {
+            subTotal+=item.getSubtotalPrice();
+        }
+        double tax = subTotal*0.0875;
+        double total = subTotal+tax;
+
+        subtotalText.setText("$"+subTotal);
+        taxText.setText("$"+taxText);
+        totalText.setText("$"+total);
     }
 
     @Override

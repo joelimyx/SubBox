@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context="com.joelimyx.subbox.ShoppingCart.CheckOutActivity">
+    android:layout_margin="16dp"
+    tools:context="com.joelimyx.subbox.CheckOut.CheckOutActivity">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/checkout_recyclerview"

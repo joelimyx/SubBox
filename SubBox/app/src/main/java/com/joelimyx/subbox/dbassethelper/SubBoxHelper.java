@@ -44,6 +44,7 @@ public class SubBoxHelper extends SQLiteOpenHelper {
     private SubBoxHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
+
     public static SubBoxHelper getsInstance(Context context){
         if (sInstance == null){
             sInstance = new SubBoxHelper(context);
