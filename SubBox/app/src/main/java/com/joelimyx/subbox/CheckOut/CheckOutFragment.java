@@ -70,15 +70,15 @@ public class CheckOutFragment extends Fragment {
         recyclerview.setLayoutManager(manager);
         recyclerview.setAdapter(new CheckOutAdapter(checkOutItems));
 
-        double subTotal= 0f;
+        double subTotal= 0d;
         for (CheckOutItem item: checkOutItems) {
             subTotal+=item.getSubtotalPrice();
         }
-        double tax = subTotal*0.0875;
+        double tax = subTotal*0.0875d;
         double total = subTotal+tax;
 
         subtotalText.setText("$"+subTotal);
-        taxText.setText("$"+taxText);
+        taxText.setText("$"+tax);
         totalText.setText("$"+total);
     }
 

@@ -19,14 +19,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Detail.DetailActivity"
-            android:label="@string/title_activity_detail"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-        <activity
             android:name=".CheckOut.CheckOutActivity"
             android:label="@string/title_activity_check_out"
             android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".Detail.DetailScrollingActivity"
+            android:label="@string/title_activity_detail_scrolling"
+            android:parentActivityName=".MainList.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.joelimyx.subbox.MainList.MainActivity"/>
         </activity>
     </application>
 

@@ -1,5 +1,6 @@
 package com.joelimyx.subbox.dbassethelper;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -109,11 +110,22 @@ public class SubBoxHelper extends SQLiteOpenHelper {
             return null;
         }
     }
+
+    public void addSubBoxToCheckOut(int id){
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COL_ITEM_ID,id);
+        values.put(COL_COUNT,1);
+        db.insert(CHECKOUT_TABLE_NAME,null,values);
+        db.close();
+    }
+
+    //CheckOut AREA
     public List<CheckOutItem> getCheckoutList(){
 
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(
-                "SELECT "+COL_ITEM_ID+", "+COL_NAME+", "+COL_PRICE+", "+COL_COUNT+
+                "SELECT "+ITEM_TABLE_NAME+"."+COL_ID+", "+COL_NAME+", "+COL_PRICE+", "+COL_COUNT+
                 " FROM "+ITEM_TABLE_NAME+" JOIN "+ CHECKOUT_TABLE_NAME +
                 " WHERE " + ITEM_TABLE_NAME+"."+COL_ID+
                 " = "+ CHECKOUT_TABLE_NAME +"."+COL_ITEM_ID,null);

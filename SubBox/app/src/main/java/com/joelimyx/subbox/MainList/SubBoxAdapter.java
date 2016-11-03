@@ -31,7 +31,7 @@ public class SubBoxAdapter extends RecyclerView.Adapter<SubBoxAdapter.SubBoxView
 
     @Override
     public SubBoxViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.subbox_list_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_subbox,parent,false);
         return new SubBoxViewHolder(view);
     }
 

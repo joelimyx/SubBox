@@ -30,7 +30,7 @@ public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckO
     public CheckOutViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new CheckOutViewHolder(
                 LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.checkout_list_item,parent,false));
+                        .inflate(R.layout.list_item_checkout,parent,false));
     }
 
     @Override
@@ -38,7 +38,7 @@ public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckO
         holder.mCheckoutTitle.setText(mCheckOutItems.get(position).getName());
         double total = mCheckOutItems.get(position).getSubtotalPrice()* mCheckOutItems.get(position).getCount();
         holder.mCheckoutPrice.setText("$"+total);
-        holder.mCountText.setText(mCheckOutItems.get(position).getCount());
+//        holder.mCountText.setText(mCheckOutItems.get(position).getCount());
         //Image or title onclick
 
     }
@@ -52,6 +52,7 @@ public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckO
         @BindView(R.id.checkout_title_text) TextView mCheckoutTitle;
         @BindView(R.id.checkout_price_text) TextView mCheckoutPrice;
         @BindView(R.id.item_count_text) TextView mCountText;
+
         public CheckOutViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);

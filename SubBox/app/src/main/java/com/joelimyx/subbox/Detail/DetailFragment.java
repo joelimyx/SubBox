@@ -4,7 +4,9 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,15 +58,29 @@ public class DetailFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        ((DetailScrollingActivity)getActivity()).setSupportActionBar(toolbar);
+        ((DetailScrollingActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         TextView titleText = (TextView) view.findViewById(R.id.title_text);
         TextView priceText = (TextView) view.findViewById(R.id.detail_price_text);
         TextView detailText = (TextView) view.findViewById(R.id.detail_text);
+        final FloatingActionButton button = (FloatingActionButton) view.findViewById(R.id.add_or_done_fab);
 
         SubBox subBox = SubBoxHelper.getsInstance(getContext()).getSubBoxByID(mIdSelected);
 
         titleText.setText(subBox.getName());
         priceText.setText("$"+subBox.getPrice());
         detailText.setText(subBox.getDescription());
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SubBoxHelper.getsInstance(getContext()).addSubBoxToCheckOut(mIdSelected);
+                button.setImageResource(R.drawable.ic_done_white);
+            }
+        });
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.joelimyx.subbox.MainList;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,7 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.joelimyx.subbox.CheckOut.CheckOutActivity;
-import com.joelimyx.subbox.Detail.DetailActivity;
+import com.joelimyx.subbox.Detail.DetailScrollingActivity;
 import com.joelimyx.subbox.R;
 import com.joelimyx.subbox.dbassethelper.DBAssetHelper;
 import com.joelimyx.subbox.dbassethelper.SubBoxHelper;
@@ -76,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
     @Override
     public void onItemSelected(int id) {
 
-        Intent intent = new Intent(this,DetailActivity.class);
+        Intent intent = new Intent(this,DetailScrollingActivity.class);
         intent.putExtra(SubBoxAdapter.SELECTED_ID,id);
         startActivity(intent);
     }
