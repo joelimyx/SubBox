@@ -16,6 +16,9 @@ import com.joelimyx.subbox.R;
 import com.joelimyx.subbox.Classes.SubBox;
 import com.joelimyx.subbox.dbassethelper.SubBoxHelper;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 
 public class DetailFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -71,8 +74,14 @@ public class DetailFragment extends Fragment {
         SubBox subBox = SubBoxHelper.getsInstance(getContext()).getSubBoxByID(mIdSelected);
 
         titleText.setText(subBox.getName());
-        priceText.setText("$"+subBox.getPrice());
+
+
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault());
+        double priceValue = subBox.getPrice();
+        priceText.setText(currencyFormat.format(priceValue));
+
         detailText.setText(subBox.getDescription());
+        ((DetailScrollingActivity)getActivity()).getSupportActionBar().setTitle(subBox.getName());
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override

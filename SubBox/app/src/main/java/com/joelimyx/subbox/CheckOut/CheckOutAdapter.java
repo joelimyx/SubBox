@@ -9,7 +9,9 @@ import android.widget.TextView;
 import com.joelimyx.subbox.Classes.CheckOutItem;
 import com.joelimyx.subbox.R;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,7 +39,10 @@ public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckO
     public void onBindViewHolder(CheckOutViewHolder holder, int position) {
         holder.mCheckoutTitle.setText(mCheckOutItems.get(position).getName());
         double total = mCheckOutItems.get(position).getSubtotalPrice()* mCheckOutItems.get(position).getCount();
-        holder.mCheckoutPrice.setText("$"+total);
+
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault());
+        holder.mCheckoutPrice.setText(currencyFormat.format(total));
+
 //        holder.mCountText.setText(mCheckOutItems.get(position).getCount());
         //Image or title onclick
 

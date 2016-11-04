@@ -10,7 +10,9 @@ import android.widget.TextView;
 import com.joelimyx.subbox.R;
 import com.joelimyx.subbox.Classes.SubBox;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,7 +40,11 @@ public class SubBoxAdapter extends RecyclerView.Adapter<SubBoxAdapter.SubBoxView
     @Override
     public void onBindViewHolder(SubBoxViewHolder holder, final int position) {
         holder.mNameText.setText(mSubBoxes.get(position).getName());
-        holder.mPriceText.setText("$"+mSubBoxes.get(position).getPrice());
+
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault());
+        double priceValue = mSubBoxes.get(position).getPrice();
+        holder.mPriceText.setText(currencyFormat.format(priceValue));
+
         holder.mCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

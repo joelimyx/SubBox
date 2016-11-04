@@ -15,7 +15,9 @@ import com.joelimyx.subbox.Classes.CheckOutItem;
 import com.joelimyx.subbox.R;
 import com.joelimyx.subbox.dbassethelper.SubBoxHelper;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 
 public class CheckOutFragment extends Fragment {
@@ -77,9 +79,12 @@ public class CheckOutFragment extends Fragment {
         double tax = subTotal*0.0875d;
         double total = subTotal+tax;
 
-        subtotalText.setText("$"+subTotal);
-        taxText.setText("$"+tax);
-        totalText.setText("$"+total);
+
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault());
+
+        subtotalText.setText("Subtotal: "+currencyFormat.format(subTotal));
+        taxText.setText("Tax: "+currencyFormat.format(tax));
+        totalText.setText("Total: "+currencyFormat.format(total));
     }
 
     @Override

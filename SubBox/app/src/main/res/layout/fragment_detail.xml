@@ -13,7 +13,7 @@
         android:layout_height="@dimen/app_bar_height"
         android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay"
-        android:elevation="4dp">
+        app:elevation="4dp">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/toolbar_layout"
@@ -44,6 +44,7 @@
         android:layout_margin="@dimen/fab_margin"
         app:layout_anchor="@id/scroll_layout"
         app:layout_anchorGravity="top|end"
-        android:src="@drawable/ic_add_shopping_cart"/>
+        android:src="@drawable/ic_add_shopping_cart"
+        app:elevation="6dp"/>
 
 </android.support.design.widget.CoordinatorLayout>
