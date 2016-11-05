@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,23 +23,22 @@ import java.util.Locale;
 
 
 public class DetailFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private int mIdSelected;
+    private boolean mIsTwoPane;
 
-    private OnFragmentInteractionListener mListener;
+    //private OnFragmentInteractionListener mListener;
 
     public DetailFragment() {
-        // Required empty public constructor
     }
 
-    public static DetailFragment newInstance(int param1) {
+    public static DetailFragment newInstance(int param1, boolean param2) {
         DetailFragment fragment = new DetailFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PARAM1, param1);
+        args.putBoolean(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -48,13 +48,13 @@ public class DetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mIdSelected = getArguments().getInt(ARG_PARAM1);
+            mIsTwoPane= getArguments().getBoolean(ARG_PARAM2);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_detail, container, false);
     }
 
@@ -62,17 +62,22 @@ public class DetailFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        SubBox subBox = SubBoxHelper.getsInstance(getContext()).getSubBoxByID(mIdSelected);
+        Log.d("TwoPane", "onViewCreated:");
 
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-        ((DetailScrollingActivity)getActivity()).setSupportActionBar(toolbar);
-        ((DetailScrollingActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (!mIsTwoPane) {
+            //Toolbar
+            Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+            ((DetailScrollingActivity) getActivity()).setSupportActionBar(toolbar);
+            ((DetailScrollingActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((DetailScrollingActivity) getActivity()).getSupportActionBar().setTitle(subBox.getName());
+        }
 
+        //Reference
         TextView titleText = (TextView) view.findViewById(R.id.title_text);
         TextView priceText = (TextView) view.findViewById(R.id.detail_price_text);
         TextView detailText = (TextView) view.findViewById(R.id.detail_text);
         final FloatingActionButton detailFAB = (FloatingActionButton) view.findViewById(R.id.add_or_done_fab);
-
-        SubBox subBox = SubBoxHelper.getsInstance(getContext()).getSubBoxByID(mIdSelected);
 
         titleText.setText(subBox.getName());
 
@@ -81,7 +86,6 @@ public class DetailFragment extends Fragment {
         priceText.setText(currencyFormat.format(priceValue));
 
         detailText.setText(subBox.getDescription());
-        ((DetailScrollingActivity)getActivity()).getSupportActionBar().setTitle(subBox.getName());
 
         //Change the icon to done if it is in the checkout
         if (SubBoxHelper.getsInstance(getContext()).isSubBoxInCheckOut(mIdSelected))
@@ -99,36 +103,27 @@ public class DetailFragment extends Fragment {
             }
         });
     }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnCheckoutItemSelectedListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * TO BE CONTINUE
      */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
+//    @Override
+//    public void onAttach(Context context) {
+//        super.onAttach(context);
+//        if (context instanceof OnFragmentInteractionListener) {
+//            mListener = (OnFragmentInteractionListener) context;
+//        } else {
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnCheckoutItemSelectedListener");
+//        }
+//    }
+//
+//    @Override
+//    public void onDetach() {
+//        super.onDetach();
+//        mListener = null;
+//    }
+//
+//    public interface OnFragmentInteractionListener {
+//        void onFragmentInteraction(Uri uri);
+//    }
 }

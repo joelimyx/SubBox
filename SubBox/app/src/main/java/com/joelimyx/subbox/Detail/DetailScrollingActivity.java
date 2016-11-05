@@ -12,7 +12,7 @@ import com.joelimyx.subbox.Detail.DetailFragment;
 import com.joelimyx.subbox.MainList.SubBoxAdapter;
 import com.joelimyx.subbox.R;
 
-public class DetailScrollingActivity extends AppCompatActivity implements DetailFragment.OnFragmentInteractionListener{
+public class DetailScrollingActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,13 +21,9 @@ public class DetailScrollingActivity extends AppCompatActivity implements Detail
 
         int id = getIntent().getIntExtra(SubBoxAdapter.SELECTED_ID,-1);
 
-        DetailFragment detailFragment = DetailFragment.newInstance(id);
+        DetailFragment detailFragment = DetailFragment.newInstance(id,false);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.detail_fragment_container,detailFragment).commit();
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
 }

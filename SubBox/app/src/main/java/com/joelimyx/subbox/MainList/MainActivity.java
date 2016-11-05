@@ -147,9 +147,13 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
     @Override
     public void onItemSelected(int id) {
 
-        Intent intent = new Intent(this, DetailScrollingActivity.class);
-        intent.putExtra(SubBoxAdapter.SELECTED_ID, id);
-        startActivity(intent);
+        if(mTwoPane){
+            DetailFragment detailFragment = DetailFragment.newInstance(id,true);
 
+        }else {
+            Intent intent = new Intent(this, DetailScrollingActivity.class);
+            intent.putExtra(SubBoxAdapter.SELECTED_ID, id);
+            startActivity(intent);
+        }
     }
 }

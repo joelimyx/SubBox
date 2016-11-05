@@ -86,9 +86,13 @@ public class CheckOutFragment extends Fragment implements CheckOutAdapter.OnChec
                 builder.setMessage("Proceed to Checkout?").setTitle("Checkout").setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+
+                        //Confirm for checkOut
                         SubBoxHelper.getsInstance(getContext()).clearCheckOut();
                         adapter.clearCheckOutList();
+                        UpdateTotal();
                         Toast.makeText(getContext(), "Thank you for shopping at SubBox!!", Toast.LENGTH_LONG).show();
+
                     }
                 }).setNegativeButton("Cancel",null).create().show();
             }
