@@ -12,6 +12,7 @@ import com.joelimyx.subbox.R;
 import com.joelimyx.subbox.dbassethelper.SubBoxHelper;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -91,6 +92,11 @@ public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckO
 
         //Image or title onclick
 
+    }
+
+    public void clearCheckOutList(){
+        mCheckOutItems = new ArrayList<>();
+        notifyDataSetChanged();
     }
 
     @Override

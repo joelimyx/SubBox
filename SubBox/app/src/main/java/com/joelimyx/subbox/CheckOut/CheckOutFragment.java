@@ -1,6 +1,7 @@
 package com.joelimyx.subbox.CheckOut;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.joelimyx.subbox.Classes.CheckOutItem;
@@ -62,6 +64,7 @@ public class CheckOutFragment extends Fragment implements CheckOutAdapter.OnChec
 
         List<CheckOutItem> checkOutItems = SubBoxHelper.getsInstance(getContext()).getCheckoutList();
 
+        Button button = (Button) view.findViewById(R.id.checkout_button);
         mSubtotalText = (TextView) view.findViewById(R.id.subtotal_text);
         mTaxText= (TextView) view.findViewById(R.id.tax_text);
         mTotalText= (TextView) view.findViewById(R.id.total_text);
@@ -69,10 +72,18 @@ public class CheckOutFragment extends Fragment implements CheckOutAdapter.OnChec
         RecyclerView recyclerview = (RecyclerView) view.findViewById(R.id.checkout_recyclerview);
         LinearLayoutManager manager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
         recyclerview.setLayoutManager(manager);
-        recyclerview.setAdapter(new CheckOutAdapter(checkOutItems, this));
+        final CheckOutAdapter adapter = new CheckOutAdapter(checkOutItems,this);
+        recyclerview.setAdapter(adapter);
 
         UpdateTotal();
 
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SubBoxHelper.getsInstance(getContext()).clearCheckOut();
+                adapter.clearCheckOutList();
+            }
+        });
     }
 
     @Override

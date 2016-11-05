@@ -247,4 +247,9 @@ public class SubBoxHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void clearCheckOut(){
+        SQLiteDatabase db  = getWritableDatabase();
+        db.delete(CHECKOUT_TABLE_NAME,null,null);
+        db.close();
+    }
 }
