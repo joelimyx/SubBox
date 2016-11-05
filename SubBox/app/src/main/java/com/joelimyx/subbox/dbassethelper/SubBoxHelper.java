@@ -26,6 +26,7 @@ public class SubBoxHelper extends SQLiteOpenHelper {
     public static final String COL_NAME = "name";
     public static final String COL_PRICE = "price";
     public static final String COL_DETAIL = "detail";
+    public static final String [] COL_ITEMS_SELECTION = new String[]{COL_ID,COL_NAME,COL_PRICE,COL_DETAIL};
     public static final String CREATE_ITEM_TABLE =
             "CREATE TABLE "+ITEM_TABLE_NAME+" ( "+
             COL_ID+ " INTEGER PRIMARY KEY, "+
@@ -70,7 +71,7 @@ public class SubBoxHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(
                 ITEM_TABLE_NAME,
-                new String[]{COL_ID,COL_NAME,COL_PRICE,COL_DETAIL},
+                COL_ITEMS_SELECTION,
                 null,null,null,null,null,null);
         List<SubBox> list = new ArrayList<>();
         if (cursor.moveToFirst()){
@@ -111,13 +112,59 @@ public class SubBoxHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void addSubBoxToCheckOut(int id){
+    /**
+     * @return true if added for snackbar to show up
+     */
+    public boolean addSubBoxToCheckOut(int id){
+        Boolean isAdded = false;
         SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COL_ITEM_ID,id);
-        values.put(COL_COUNT,1);
-        db.insert(CHECKOUT_TABLE_NAME,null,values);
-        db.close();
+
+        //Try to check and see if item is already in checkout table
+        Cursor cursor = db.rawQuery(
+                "SELECT "+ITEM_TABLE_NAME+"."+COL_ID+", "+COL_NAME+", "+COL_PRICE+", "+COL_COUNT+
+                        " FROM "+ITEM_TABLE_NAME+" JOIN "+ CHECKOUT_TABLE_NAME +
+                        " WHERE " + ITEM_TABLE_NAME+"."+COL_ID+
+                        " = "+ CHECKOUT_TABLE_NAME +"."+COL_ITEM_ID+
+                        " AND "+COL_ITEM_ID+" = "+id,null);
+
+        //If not, insert it into the checkout table
+        if (!cursor.moveToFirst()) {
+            ContentValues values = new ContentValues();
+            values.put(COL_ITEM_ID, id);
+            values.put(COL_COUNT, 1);
+            db.insert(CHECKOUT_TABLE_NAME, null, values);
+            db.close();
+            isAdded=true;
+        }
+        cursor.close();
+        return isAdded;
+    }
+
+    /**
+     *
+     * @param query = search query
+     * @return List of SubBoxes that matches the query with subBox name
+     */
+    public List<SubBox> getSearchList(String query){
+        SQLiteDatabase db  = getReadableDatabase();
+        Cursor cursor = db.query(ITEM_TABLE_NAME,
+                COL_ITEMS_SELECTION,
+                COL_NAME+" LIKE ? ",
+                new String[]{"%"+query+"%"},
+                null,null,null,null);
+        List<SubBox> list = new ArrayList<>();
+        if (cursor.moveToFirst()){
+            while (!cursor.isAfterLast()){
+                list.add(new SubBox(
+                        cursor.getString(cursor.getColumnIndex(COL_NAME)),
+                        cursor.getDouble(cursor.getColumnIndex(COL_PRICE)),
+                        cursor.getString(cursor.getColumnIndex(COL_DETAIL)),
+                        cursor.getInt(cursor.getColumnIndex(COL_ID))));
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        return list;
     }
 
     //CheckOut AREA
@@ -143,4 +190,23 @@ public class SubBoxHelper extends SQLiteOpenHelper {
         cursor.close();
         return list;
     }
+
+
+    public void modifyCheckOutItemCount(int newCount, int itemId){
+        SQLiteDatabase db = getWritableDatabase();
+        if (newCount==0) {
+            db.delete(CHECKOUT_TABLE_NAME,
+                    COL_ITEM_ID+ " = ?",
+                    new String[]{String.valueOf(itemId)});
+        }else{
+            ContentValues values = new ContentValues();
+            values.put(COL_COUNT, newCount);
+            db.update(CHECKOUT_TABLE_NAME,
+                    values,
+                    COL_ITEM_ID+" = ?",
+                    new String[]{ String.valueOf(itemId) });
+        }
+        db.close();
+    }
+
 }

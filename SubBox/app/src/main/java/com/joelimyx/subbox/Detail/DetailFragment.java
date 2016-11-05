@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -69,7 +70,7 @@ public class DetailFragment extends Fragment {
         TextView titleText = (TextView) view.findViewById(R.id.title_text);
         TextView priceText = (TextView) view.findViewById(R.id.detail_price_text);
         TextView detailText = (TextView) view.findViewById(R.id.detail_text);
-        final FloatingActionButton button = (FloatingActionButton) view.findViewById(R.id.add_or_done_fab);
+        final FloatingActionButton detailFAB = (FloatingActionButton) view.findViewById(R.id.add_or_done_fab);
 
         SubBox subBox = SubBoxHelper.getsInstance(getContext()).getSubBoxByID(mIdSelected);
 
@@ -83,11 +84,13 @@ public class DetailFragment extends Fragment {
         detailText.setText(subBox.getDescription());
         ((DetailScrollingActivity)getActivity()).getSupportActionBar().setTitle(subBox.getName());
 
-        button.setOnClickListener(new View.OnClickListener() {
+        detailFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SubBoxHelper.getsInstance(getContext()).addSubBoxToCheckOut(mIdSelected);
-                button.setImageResource(R.drawable.ic_done_white);
+                boolean isAdded = SubBoxHelper.getsInstance(getContext()).addSubBoxToCheckOut(mIdSelected);
+                detailFAB.setImageResource(R.drawable.ic_done);
+                if (isAdded)
+                    Snackbar.make(view,"Item Added to cart.", Snackbar.LENGTH_LONG).show();
             }
         });
     }

@@ -1,51 +1,56 @@
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
-    android:orientation="vertical"
     tools:context="com.joelimyx.subbox.CheckOut.CheckOutActivity">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/checkout_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="16dp"
-        android:layout_weight="0.8"/>
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"/>
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.2"
+        android:layout_height="95dp"
         android:background="#003ec2"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:layout_alignParentBottom="true">
         <TextView
             android:id="@+id/subtotal_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
+            android:textSize="16sp"
             android:textColor="#eee"/>
         <TextView
             android:id="@+id/tax_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/subtotal_text"
-            android:textSize="12sp"
+            android:textSize="16sp"
             android:textColor="#eee"/>
         <TextView
             android:id="@+id/total_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tax_text"
-            android:textSize="12sp"
+            android:textSize="16sp"
             android:textColor="#eee"/>
-        <Button
-            android:id="@+id/checkout_button"
+        <android.support.v7.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:text="checkout"/>
+            android:layout_centerVertical="true"
+            app:cardCornerRadius="5dp">
+            <Button
+                android:id="@+id/checkout_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="checkout"
+                android:background="#eee"/>
+        </android.support.v7.widget.CardView>
     </RelativeLayout>
 
-</LinearLayout>
+</RelativeLayout>

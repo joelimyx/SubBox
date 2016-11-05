@@ -69,6 +69,11 @@ public class SubBoxAdapter extends RecyclerView.Adapter<SubBoxAdapter.SubBoxView
         }
     }
 
+    public void replaceData(List<SubBox> newData){
+        mSubBoxes = newData;
+        notifyDataSetChanged();
+    }
+
     public interface OnItemSelectedListener{
         void onItemSelected(int id);
     }

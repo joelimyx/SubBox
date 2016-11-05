@@ -1,6 +1,7 @@
 package com.joelimyx.subbox.CheckOut;
 
 import android.content.Context;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.joelimyx.subbox.Classes.CheckOutItem;
@@ -63,11 +65,12 @@ public class CheckOutFragment extends Fragment {
 
         List<CheckOutItem> checkOutItems = SubBoxHelper.getsInstance(getContext()).getCheckoutList();
 
-        RecyclerView recyclerview = (RecyclerView) view.findViewById(R.id.checkout_recyclerview);
         TextView subtotalText = (TextView) view.findViewById(R.id.subtotal_text);
         TextView taxText= (TextView) view.findViewById(R.id.tax_text);
         TextView totalText= (TextView) view.findViewById(R.id.total_text);
+        ImageView minusImage = (ImageView) view.findViewById(R.id.red_minus);
 
+        RecyclerView recyclerview = (RecyclerView) view.findViewById(R.id.checkout_recyclerview);
         LinearLayoutManager manager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
         recyclerview.setLayoutManager(manager);
         recyclerview.setAdapter(new CheckOutAdapter(checkOutItems));
@@ -85,6 +88,7 @@ public class CheckOutFragment extends Fragment {
         subtotalText.setText("Subtotal: "+currencyFormat.format(subTotal));
         taxText.setText("Tax: "+currencyFormat.format(tax));
         totalText.setText("Total: "+currencyFormat.format(total));
+
     }
 
     @Override
