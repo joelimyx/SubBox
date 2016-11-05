@@ -76,7 +76,6 @@ public class DetailFragment extends Fragment {
 
         titleText.setText(subBox.getName());
 
-
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault());
         double priceValue = subBox.getPrice();
         priceText.setText(currencyFormat.format(priceValue));
@@ -84,13 +83,19 @@ public class DetailFragment extends Fragment {
         detailText.setText(subBox.getDescription());
         ((DetailScrollingActivity)getActivity()).getSupportActionBar().setTitle(subBox.getName());
 
+        //Change the icon to done if it is in the checkout
+        if (SubBoxHelper.getsInstance(getContext()).isSubBoxInCheckOut(mIdSelected))
+            detailFAB.setImageResource(R.drawable.ic_done);
+
         detailFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean isAdded = SubBoxHelper.getsInstance(getContext()).addSubBoxToCheckOut(mIdSelected);
-                detailFAB.setImageResource(R.drawable.ic_done);
-                if (isAdded)
-                    Snackbar.make(view,"Item Added to cart.", Snackbar.LENGTH_LONG).show();
+                //Add to checkout and change the icon to done
+                if(!SubBoxHelper.getsInstance(getContext()).isSubBoxInCheckOut(mIdSelected)){
+                    SubBoxHelper.getsInstance(getContext()).addSubBoxToCheckOut(mIdSelected);
+                    detailFAB.setImageResource(R.drawable.ic_done);
+                    Snackbar.make(view, "Item added to cart.", Snackbar.LENGTH_LONG).show();
+                }
             }
         });
     }

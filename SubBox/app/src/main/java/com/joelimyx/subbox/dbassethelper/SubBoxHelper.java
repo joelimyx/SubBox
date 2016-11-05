@@ -67,6 +67,9 @@ public class SubBoxHelper extends SQLiteOpenHelper {
         this.onCreate(db);
     }
 
+    /*----------------------------------------------------------
+    MAIN LIST AREA
+     ----------------------------------------------------------*/
     public List<SubBox> getSubBoxList(){
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(
@@ -88,6 +91,59 @@ public class SubBoxHelper extends SQLiteOpenHelper {
         return list;
     }
 
+    public List<SubBox> sortListByPrice(){
+        SQLiteDatabase db  = getReadableDatabase();
+        Cursor cursor = db.query(ITEM_TABLE_NAME,
+                COL_ITEMS_SELECTION,
+                null,
+                null,
+                null,null,
+                COL_PRICE,
+                null);
+        List<SubBox> list = new ArrayList<>();
+        if (cursor.moveToFirst()){
+            while (!cursor.isAfterLast()){
+                list.add(new SubBox(
+                        cursor.getString(cursor.getColumnIndex(COL_NAME)),
+                        cursor.getDouble(cursor.getColumnIndex(COL_PRICE)),
+                        cursor.getString(cursor.getColumnIndex(COL_DETAIL)),
+                        cursor.getInt(cursor.getColumnIndex(COL_ID))));
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        return list;
+    }
+
+    /**
+     * @param query = search query
+     * @return List of SubBoxes that matches the query with subBox name
+     */
+    public List<SubBox> getSearchList(String query){
+        SQLiteDatabase db  = getReadableDatabase();
+        Cursor cursor = db.query(ITEM_TABLE_NAME,
+                COL_ITEMS_SELECTION,
+                COL_NAME+" LIKE ? ",
+                new String[]{"%"+query+"%"},
+                null,null,null,null);
+        List<SubBox> list = new ArrayList<>();
+        if (cursor.moveToFirst()){
+            while (!cursor.isAfterLast()){
+                list.add(new SubBox(
+                        cursor.getString(cursor.getColumnIndex(COL_NAME)),
+                        cursor.getDouble(cursor.getColumnIndex(COL_PRICE)),
+                        cursor.getString(cursor.getColumnIndex(COL_DETAIL)),
+                        cursor.getInt(cursor.getColumnIndex(COL_ID))));
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        return list;
+    }
+
+    /*----------------------------------------------------------
+    DETAIL AREA
+     ----------------------------------------------------------*/
     public SubBox getSubBoxByID(int id){
 
         SQLiteDatabase db = getReadableDatabase();
@@ -115,9 +171,10 @@ public class SubBoxHelper extends SQLiteOpenHelper {
     /**
      * @return true if added for snackbar to show up
      */
-    public boolean addSubBoxToCheckOut(int id){
-        Boolean isAdded = false;
-        SQLiteDatabase db = getWritableDatabase();
+
+    public boolean isSubBoxInCheckOut(int id){
+
+        SQLiteDatabase db = getReadableDatabase();
 
         //Try to check and see if item is already in checkout table
         Cursor cursor = db.rawQuery(
@@ -127,47 +184,28 @@ public class SubBoxHelper extends SQLiteOpenHelper {
                         " = "+ CHECKOUT_TABLE_NAME +"."+COL_ITEM_ID+
                         " AND "+COL_ITEM_ID+" = "+id,null);
 
-        //If not, insert it into the checkout table
-        if (!cursor.moveToFirst()) {
-            ContentValues values = new ContentValues();
-            values.put(COL_ITEM_ID, id);
-            values.put(COL_COUNT, 1);
-            db.insert(CHECKOUT_TABLE_NAME, null, values);
-            db.close();
-            isAdded=true;
-        }
+        Boolean isAdded = cursor.moveToFirst();
         cursor.close();
         return isAdded;
     }
 
-    /**
-     *
-     * @param query = search query
-     * @return List of SubBoxes that matches the query with subBox name
-     */
-    public List<SubBox> getSearchList(String query){
-        SQLiteDatabase db  = getReadableDatabase();
-        Cursor cursor = db.query(ITEM_TABLE_NAME,
-                COL_ITEMS_SELECTION,
-                COL_NAME+" LIKE ? ",
-                new String[]{"%"+query+"%"},
-                null,null,null,null);
-        List<SubBox> list = new ArrayList<>();
-        if (cursor.moveToFirst()){
-            while (!cursor.isAfterLast()){
-                list.add(new SubBox(
-                        cursor.getString(cursor.getColumnIndex(COL_NAME)),
-                        cursor.getDouble(cursor.getColumnIndex(COL_PRICE)),
-                        cursor.getString(cursor.getColumnIndex(COL_DETAIL)),
-                        cursor.getInt(cursor.getColumnIndex(COL_ID))));
-                cursor.moveToNext();
-            }
+    //Add to CheckOut if SubBox is not in CheckOut
+    public void addSubBoxToCheckOut(int id){
+        SQLiteDatabase db = getWritableDatabase();
+
+        //If not, insert it into the checkout table
+        if (!isSubBoxInCheckOut(id)) {
+            ContentValues values = new ContentValues();
+            values.put(COL_ITEM_ID, id);
+            values.put(COL_COUNT, 1);
+            db.insert(CHECKOUT_TABLE_NAME, null, values);
         }
-        cursor.close();
-        return list;
+        db.close();
     }
 
+    //--------------------------------------------------------------------------------------------------------------------
     //CheckOut AREA
+    //--------------------------------------------------------------------------------------------------------------------
     public List<CheckOutItem> getCheckoutList(){
 
         SQLiteDatabase db = getReadableDatabase();

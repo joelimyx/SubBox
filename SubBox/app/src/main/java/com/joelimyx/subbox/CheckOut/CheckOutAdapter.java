@@ -8,7 +8,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.joelimyx.subbox.Classes.CheckOutItem;
-import com.joelimyx.subbox.Classes.SubBox;
 import com.joelimyx.subbox.R;
 import com.joelimyx.subbox.dbassethelper.SubBoxHelper;
 
@@ -26,10 +25,16 @@ import butterknife.ButterKnife;
 public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckOutViewHolder> {
 
     List<CheckOutItem> mCheckOutItems;
-    private OnItemModifyListener mListener;
+    private OnCheckOutItemModifyListener mListener;
 
-    public CheckOutAdapter(List<CheckOutItem> checkOutItems) {
+    //Interface for notifying CheckOutFragment total update
+    interface OnCheckOutItemModifyListener {
+        void onCheckOutItemModify();
+    }
+
+    public CheckOutAdapter(List<CheckOutItem> checkOutItems, OnCheckOutItemModifyListener listener) {
         mCheckOutItems = checkOutItems;
+        mListener = listener;
     }
 
     @Override
@@ -42,7 +47,7 @@ public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckO
     @Override
     public void onBindViewHolder(final CheckOutViewHolder holder, int position) {
         holder.mCheckoutTitle.setText(mCheckOutItems.get(position).getName());
-        double total = mCheckOutItems.get(position).getSubtotalPrice()* mCheckOutItems.get(position).getCount();
+        double total = mCheckOutItems.get(position).getSubtotalPrice();
 
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault());
         holder.mCheckoutPrice.setText(currencyFormat.format(total));
@@ -78,11 +83,11 @@ public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckO
                         notifyItemChanged(holderPos);
                         break;
                 }
+                mListener.onCheckOutItemModify();
             }
         };
         holder.mRedMinus.setOnClickListener(listener);
         holder.mGreenPlus.setOnClickListener(listener);
-
 
         //Image or title onclick
 
@@ -105,8 +110,5 @@ public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckO
             super(itemView);
             ButterKnife.bind(this,itemView);
         }
-    }
-    interface OnItemModifyListener{
-        void onItemModify(int count);
     }
 }

@@ -97,7 +97,9 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
         });
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.price_sort) {
+            List<SubBox> restore = SubBoxHelper.getsInstance(getApplicationContext()).sortListByPrice();
+            mAdapter.replaceData(restore);
             return true;
         }
 
