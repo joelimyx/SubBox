@@ -6,7 +6,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.joelimyx.subbox.R;
 
-public class CheckOutActivity extends AppCompatActivity implements CheckOutFragment.OnCheckoutItemSelectedListener{
+public class CheckOutActivity extends AppCompatActivity{// implements CheckOutFragment.OnCheckoutItemSelectedListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,9 +18,9 @@ public class CheckOutActivity extends AppCompatActivity implements CheckOutFragm
         CheckOutFragment checkOutFragment = new CheckOutFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.checkout_fragment_container, checkOutFragment).commit();
     }
-
-    @Override
-    public void onCheckoutItemSelect(int id) {
-
-    }
+//
+//    @Override
+//    public void onCheckoutItemSelect(int id) {
+//
+//    }
 }

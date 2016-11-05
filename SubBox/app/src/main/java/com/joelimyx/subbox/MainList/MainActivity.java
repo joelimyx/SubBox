@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
@@ -16,9 +17,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 
 import com.joelimyx.subbox.CheckOut.CheckOutActivity;
+import com.joelimyx.subbox.CheckOut.CheckOutFragment;
 import com.joelimyx.subbox.Classes.SubBox;
+import com.joelimyx.subbox.Detail.DetailFragment;
 import com.joelimyx.subbox.Detail.DetailScrollingActivity;
 import com.joelimyx.subbox.R;
 import com.joelimyx.subbox.dbassethelper.DBAssetHelper;
@@ -31,7 +35,9 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnItemSelectedListener{
     @BindView(R.id.recyclerview) RecyclerView mRecyclerView;
+    FrameLayout container;
     SubBoxAdapter mAdapter;
+    private boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +45,13 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        container = (FrameLayout) findViewById(R.id.detail_or_checkout_container);
+        mTwoPane = container!=null;
+
         DBAssetHelper dbSetup = new DBAssetHelper(MainActivity.this);
         dbSetup.getReadableDatabase();
 
-        GridLayoutManager manager = new GridLayoutManager(this,2, LinearLayoutManager.VERTICAL,false);
-        mRecyclerView.setLayoutManager(manager);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this,2, LinearLayoutManager.VERTICAL,false));
 
         mAdapter = new SubBoxAdapter(SubBoxHelper.getsInstance(this).getSubBoxList(),this);
         mRecyclerView.setAdapter(mAdapter);
@@ -55,12 +63,21 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(),CheckOutActivity.class);
-                startActivity(intent);
+
+                if(mTwoPane){
+                    CheckOutFragment checkOutFragment = new CheckOutFragment();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.detail_or_checkout_container,checkOutFragment).commit();
+                }else {
+                    Intent intent = new Intent(getApplicationContext(),CheckOutActivity.class);
+                    startActivity(intent);
+                }
             }
         });
     }
 
+    //--------------------------------------------------------------------------------------------------------------------
+    //Menu AREA
+    //--------------------------------------------------------------------------------------------------------------------
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -103,6 +120,9 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
         return super.onOptionsItemSelected(item);
     }
 
+    //--------------------------------------------------------------------------------------------------------------------
+    //Handling search intent
+    //--------------------------------------------------------------------------------------------------------------------
     @Override
     protected void onNewIntent(Intent intent) {
         setIntent(intent);
@@ -121,12 +141,15 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
     }
 
 
-
+    //--------------------------------------------------------------------------------------------------------------------
+    //Interface Area
+    //--------------------------------------------------------------------------------------------------------------------
     @Override
     public void onItemSelected(int id) {
 
-        Intent intent = new Intent(this,DetailScrollingActivity.class);
-        intent.putExtra(SubBoxAdapter.SELECTED_ID,id);
+        Intent intent = new Intent(this, DetailScrollingActivity.class);
+        intent.putExtra(SubBoxAdapter.SELECTED_ID, id);
         startActivity(intent);
+
     }
 }

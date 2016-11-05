@@ -5,7 +5,9 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
-    tools:context="com.joelimyx.subbox.CheckOut.CheckOutActivity">
+    android:background="#e5e5f6fa"
+    tools:context="com.joelimyx.subbox.CheckOut.CheckOutActivity"
+    app:elevation="@dimen/app_bar_height">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/checkout_recyclerview"
@@ -43,7 +45,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            app:cardCornerRadius="5dp">
+            app:cardCornerRadius="5dp"
+            app:elevation="@dimen/cardview_default_elevation">
             <Button
                 android:id="@+id/checkout_button"
                 android:layout_width="wrap_content"
