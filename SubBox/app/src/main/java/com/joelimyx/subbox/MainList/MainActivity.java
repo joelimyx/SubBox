@@ -1,12 +1,10 @@
-package com.joelimyx.subbox.MainList;
+package com.joelimyx.subbox.mainlist;
 
 import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,16 +12,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
-import com.joelimyx.subbox.CheckOut.CheckOutActivity;
-import com.joelimyx.subbox.CheckOut.CheckOutFragment;
+import com.joelimyx.subbox.checkout.CheckOutActivity;
+import com.joelimyx.subbox.checkout.CheckOutFragment;
 import com.joelimyx.subbox.Classes.SubBox;
-import com.joelimyx.subbox.Detail.DetailFragment;
-import com.joelimyx.subbox.Detail.DetailScrollingActivity;
+import com.joelimyx.subbox.detail.DetailFragment;
+import com.joelimyx.subbox.detail.DetailScrollingActivity;
 import com.joelimyx.subbox.R;
 import com.joelimyx.subbox.dbassethelper.DBAssetHelper;
 import com.joelimyx.subbox.dbassethelper.SubBoxHelper;
@@ -38,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
     FrameLayout container;
     SubBoxAdapter mAdapter;
     private boolean mTwoPane;
+    public static final int DETAIL_REQUEST_CODE = 1;
+    public static final int CHECKOUT_REQUEST_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,36 +52,45 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
 
         mRecyclerView.setLayoutManager(new GridLayoutManager(this,2, LinearLayoutManager.VERTICAL,false));
 
-        mAdapter = new SubBoxAdapter(SubBoxHelper.getsInstance(this).getSubBoxList(),this);
+        mAdapter = new SubBoxAdapter(SubBoxHelper.getsInstance(this).getSubBoxList(),this,this);
         mRecyclerView.setAdapter(mAdapter);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if(mTwoPane){
-                    CheckOutFragment checkOutFragment = new CheckOutFragment();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.detail_or_checkout_container,checkOutFragment).commit();
-                }else {
-                    Intent intent = new Intent(getApplicationContext(),CheckOutActivity.class);
-                    startActivity(intent);
-                }
-            }
-        });
     }
 
     //--------------------------------------------------------------------------------------------------------------------
-    //Menu AREA
+    //Make sure the detail_or_checkout_container stay the same as it as it was(detail or checkout) before rotation
+    //--------------------------------------------------------------------------------------------------------------------
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(mTwoPane) {
+            if (requestCode == DETAIL_REQUEST_CODE) {
+                if (resultCode == RESULT_OK) {
+                    int id = data.getIntExtra("id", -1);
+                    DetailFragment detailFragment = DetailFragment.newInstance(id);
+                    getSupportFragmentManager().beginTransaction().replace(R.id.detail_or_checkout_container, detailFragment).commit();
+                }
+            }else if(requestCode == CHECKOUT_REQUEST_CODE){
+                if (resultCode == RESULT_OK){
+                    CheckOutFragment checkOutFragment = new CheckOutFragment();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.detail_or_checkout_container, checkOutFragment).commit();
+
+                }
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------------------------
+    //MENU AREA
     //--------------------------------------------------------------------------------------------------------------------
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
+        //Search Service activator
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView =
@@ -95,13 +103,14 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+
         MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
                 return true;
             }
 
+            //Restore list if back button is pressed in searchview
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 List<SubBox> restore = SubBoxHelper.getsInstance(getApplicationContext()).getSubBoxList();
@@ -110,18 +119,27 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
             }
         });
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.price_sort) {
-            List<SubBox> restore = SubBoxHelper.getsInstance(getApplicationContext()).sortListByPrice();
-            mAdapter.replaceData(restore);
-            return true;
-        }
+        switch (item.getItemId()){
+            case R.id.price_sort:
+                List<SubBox> restore = SubBoxHelper.getsInstance(getApplicationContext()).sortListByPrice();
+                mAdapter.replaceData(restore);
+                return true;
 
-        return super.onOptionsItemSelected(item);
+            //Menu item for cart to start DetailActivity or DetailFragment
+            case R.id.cart:
+                if(mTwoPane){
+                    CheckOutFragment checkOutFragment = new CheckOutFragment();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.detail_or_checkout_container,checkOutFragment).commit();
+                }else {
+                    Intent intent = new Intent(getApplicationContext(),CheckOutActivity.class);
+                    startActivityForResult(intent,CHECKOUT_REQUEST_CODE);
+                }
+        }
+        return true;
     }
 
     //--------------------------------------------------------------------------------------------------------------------
-    //Handling search intent
+    //Handling search intent AREA
     //--------------------------------------------------------------------------------------------------------------------
     @Override
     protected void onNewIntent(Intent intent) {
@@ -142,18 +160,19 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
 
 
     //--------------------------------------------------------------------------------------------------------------------
-    //Interface Area
+    //INTERFACE AREA
+    //From SubBoxAdapter to DetailActivity or DetailFragment
     //--------------------------------------------------------------------------------------------------------------------
     @Override
     public void onItemSelected(int id) {
 
         if(mTwoPane){
-            DetailFragment detailFragment = DetailFragment.newInstance(id,true);
-
+            DetailFragment detailFragment = DetailFragment.newInstance(id);
+            getSupportFragmentManager().beginTransaction().replace(R.id.detail_or_checkout_container,detailFragment).commit();
         }else {
             Intent intent = new Intent(this, DetailScrollingActivity.class);
             intent.putExtra(SubBoxAdapter.SELECTED_ID, id);
-            startActivity(intent);
+            startActivityForResult(intent,DETAIL_REQUEST_CODE);
         }
     }
 }

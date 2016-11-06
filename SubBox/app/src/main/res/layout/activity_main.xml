@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.joelimyx.subbox.MainList.MainActivity">
+    tools:context="com.joelimyx.subbox.mainlist.MainActivity"
+    android:background="#edf7ff">
 
     <LinearLayout
         android:orientation="vertical"
@@ -32,14 +33,5 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </LinearLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_shopping_cart"
-        app:elevation="6dp"/>
 
 </android.support.design.widget.CoordinatorLayout>

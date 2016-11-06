@@ -9,12 +9,14 @@ public class SubBox {
     private double mPrice;
     private String mDescription;
     private int mId;
+    private String mImgUrl;
 
-    public SubBox(String name, double price, String description, int id) {
+    public SubBox(String name, double price, String description, int id, String imgUrl) {
         mName = name;
         mPrice = price;
         mDescription = description;
         mId = id;
+        mImgUrl = imgUrl;
     }
 
     public String getName() {
@@ -31,5 +33,9 @@ public class SubBox {
 
     public int getId() {
         return mId;
+    }
+
+    public String getImgUrl() {
+        return mImgUrl;
     }
 }

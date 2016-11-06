@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
     android:background="#e5e5f6fa"
-    tools:context="com.joelimyx.subbox.CheckOut.CheckOutActivity"
+    tools:context="com.joelimyx.subbox.checkout.CheckOutActivity"
     app:elevation="@dimen/app_bar_height">
 
     <android.support.v7.widget.RecyclerView

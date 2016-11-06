@@ -1,15 +1,18 @@
-package com.joelimyx.subbox.CheckOut;
+package com.joelimyx.subbox.checkout;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.joelimyx.subbox.Classes.CheckOutItem;
 import com.joelimyx.subbox.R;
 import com.joelimyx.subbox.dbassethelper.SubBoxHelper;
+import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -25,17 +28,26 @@ import butterknife.ButterKnife;
 
 public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckOutViewHolder> {
 
-    List<CheckOutItem> mCheckOutItems;
-    private OnCheckOutItemModifyListener mListener;
+    private List<CheckOutItem> mCheckOutItems;
+    private OnCheckOutItemModifyListener mCheckOutItemModifyListener;
+    private Context mContext;
+    private OnCheckOutItemSelectedListener mCheckOutItemSelectedListener;
 
-    //Interface for notifying CheckOutFragment total update
+    //Interface for notifying CheckOutFragment to update total
     interface OnCheckOutItemModifyListener {
         void onCheckOutItemModify();
     }
 
-    public CheckOutAdapter(List<CheckOutItem> checkOutItems, OnCheckOutItemModifyListener listener) {
+    //Interface to communicate from checkout fragment to detail fragment
+    interface OnCheckOutItemSelectedListener{
+        void onCheckOutItemSelected(int id);
+    }
+
+    public CheckOutAdapter(List<CheckOutItem> checkOutItems, OnCheckOutItemModifyListener checkOutItemModifyListener, OnCheckOutItemSelectedListener itemSelectedListener, Context context) {
         mCheckOutItems = checkOutItems;
-        mListener = listener;
+        mCheckOutItemModifyListener = checkOutItemModifyListener;
+        mContext = context;
+        mCheckOutItemSelectedListener = itemSelectedListener;
     }
 
     @Override
@@ -47,9 +59,13 @@ public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckO
 
     @Override
     public void onBindViewHolder(final CheckOutViewHolder holder, int position) {
+        Picasso.with(mContext)
+                .load(mCheckOutItems.get(position).getImgUrl())
+                .resize(200,200).centerCrop()
+                .into(holder.mCheckoutImage);
         holder.mCheckoutTitle.setText(mCheckOutItems.get(position).getName());
-        double total = mCheckOutItems.get(position).getSubtotalPrice();
 
+        double total = mCheckOutItems.get(position).getSubtotalPrice();
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault());
         holder.mCheckoutPrice.setText(currencyFormat.format(total));
 
@@ -63,35 +79,46 @@ public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckO
                 CheckOutItem item = mCheckOutItems.get(holderPos);
 
                 switch (view.getId()){
-                    case R.id.red_minus:
-                        //Remove the item if the count is at 1
-                        if (item.getCount()==1){
-                            mCheckOutItems.remove(holderPos);
-                            SubBoxHelper.getsInstance(view.getContext())
-                                    .modifyCheckOutItemCount(0,item.getItemId());
-                            notifyItemRemoved(holderPos);
-                        }else{
-                            SubBoxHelper.getsInstance(view.getContext())
-                                    .modifyCheckOutItemCount(item.getCount()-1,item.getItemId());
-                            mCheckOutItems.get(holderPos).addOrMinusCount('-');
-                            notifyItemChanged(holderPos);
-                        }
-                        break;
-                    case R.id.green_plus:
+
+                //Remove the item if the count is at 1
+                case R.id.red_minus:
+                    if (item.getCount()==1){
+                        mCheckOutItems.remove(holderPos);
                         SubBoxHelper.getsInstance(view.getContext())
-                                .modifyCheckOutItemCount(item.getCount()+1,item.getItemId());
-                        mCheckOutItems.get(holderPos).addOrMinusCount('+');
+                                .modifyCheckOutItemCount(0,item.getItemId());
+                        notifyItemRemoved(holderPos);
+                        mCheckOutItemModifyListener.onCheckOutItemModify();
+
+                    }else{
+                        //Else minus one count
+                        SubBoxHelper.getsInstance(view.getContext())
+                                .modifyCheckOutItemCount(item.getCount()-1,item.getItemId());
+                        mCheckOutItems.get(holderPos).addOrMinusCount('-');
                         notifyItemChanged(holderPos);
-                        break;
+                        mCheckOutItemModifyListener.onCheckOutItemModify();
+                    }
+                    break;
+
+                //Increase count by one
+                case R.id.green_plus:
+                    SubBoxHelper.getsInstance(view.getContext())
+                            .modifyCheckOutItemCount(item.getCount()+1,item.getItemId());
+                    mCheckOutItems.get(holderPos).addOrMinusCount('+');
+                    notifyItemChanged(holderPos);
+                    mCheckOutItemModifyListener.onCheckOutItemModify();
+                    break;
+                //Show detail page when item is selected in checkout
+                case R.id.checkout_item:
+                    mCheckOutItemSelectedListener.onCheckOutItemSelected(mCheckOutItems.get(holderPos).getItemId());
+                    break;
                 }
-                mListener.onCheckOutItemModify();
+
             }
         };
+
         holder.mRedMinus.setOnClickListener(listener);
         holder.mGreenPlus.setOnClickListener(listener);
-
-        //Image or title onclick
-
+        holder.mCheckoutItemLayout.setOnClickListener(listener);
     }
 
     public void clearCheckOutList(){
@@ -106,6 +133,8 @@ public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckO
 
 
     static class CheckOutViewHolder extends RecyclerView.ViewHolder{
+        @BindView(R.id.checkout_item) RelativeLayout mCheckoutItemLayout;
+        @BindView(R.id.checkout_image) ImageView mCheckoutImage;
         @BindView(R.id.checkout_title_text) TextView mCheckoutTitle;
         @BindView(R.id.checkout_price_text) TextView mCheckoutPrice;
         @BindView(R.id.checkout_count_text) TextView mCountText;

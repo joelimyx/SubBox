@@ -1,14 +1,17 @@
-package com.joelimyx.subbox.MainList;
+package com.joelimyx.subbox.mainlist;
 
+import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.joelimyx.subbox.R;
 import com.joelimyx.subbox.Classes.SubBox;
+import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -25,10 +28,12 @@ public class SubBoxAdapter extends RecyclerView.Adapter<SubBoxAdapter.SubBoxView
     public static final String SELECTED_ID = "id";
     List<SubBox> mSubBoxes;
     private OnItemSelectedListener mListener;
+    Context mContext;
 
-    public SubBoxAdapter(List<SubBox> subBoxes, OnItemSelectedListener listener) {
+    public SubBoxAdapter(List<SubBox> subBoxes, OnItemSelectedListener listener, Context context) {
         mSubBoxes = subBoxes;
         mListener = listener;
+        mContext =context;
     }
 
     @Override
@@ -39,6 +44,11 @@ public class SubBoxAdapter extends RecyclerView.Adapter<SubBoxAdapter.SubBoxView
 
     @Override
     public void onBindViewHolder(SubBoxViewHolder holder, final int position) {
+
+        Picasso.with(mContext)
+                .load(mSubBoxes.get(position).getImgUrl())
+                .into(holder.mIconImage);
+
         holder.mNameText.setText(mSubBoxes.get(position).getName());
 
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault());
@@ -59,6 +69,7 @@ public class SubBoxAdapter extends RecyclerView.Adapter<SubBoxAdapter.SubBoxView
     }
 
     static class SubBoxViewHolder extends RecyclerView.ViewHolder{
+        @BindView(R.id.icon_image) ImageView mIconImage;
         @BindView(R.id.name_text) TextView mNameText;
         @BindView(R.id.price_text) TextView mPriceText;
         @BindView(R.id.cardview) CardView mCardView;

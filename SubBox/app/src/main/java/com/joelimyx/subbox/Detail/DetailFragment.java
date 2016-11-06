@@ -1,22 +1,21 @@
-package com.joelimyx.subbox.Detail;
+package com.joelimyx.subbox.detail;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.joelimyx.subbox.R;
 import com.joelimyx.subbox.Classes.SubBox;
 import com.joelimyx.subbox.dbassethelper.SubBoxHelper;
+import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -24,21 +23,18 @@ import java.util.Locale;
 
 public class DetailFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
     private int mIdSelected;
-    private boolean mIsTwoPane;
 
     //private OnFragmentInteractionListener mListener;
 
     public DetailFragment() {
     }
 
-    public static DetailFragment newInstance(int param1, boolean param2) {
+    public static DetailFragment newInstance(int param1) {
         DetailFragment fragment = new DetailFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PARAM1, param1);
-        args.putBoolean(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -48,7 +44,6 @@ public class DetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mIdSelected = getArguments().getInt(ARG_PARAM1);
-            mIsTwoPane= getArguments().getBoolean(ARG_PARAM2);
         }
     }
 
@@ -63,23 +58,18 @@ public class DetailFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         SubBox subBox = SubBoxHelper.getsInstance(getContext()).getSubBoxByID(mIdSelected);
-        Log.d("TwoPane", "onViewCreated:");
-
-        if (!mIsTwoPane) {
-            //Toolbar
-            Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-            ((DetailScrollingActivity) getActivity()).setSupportActionBar(toolbar);
-            ((DetailScrollingActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            ((DetailScrollingActivity) getActivity()).getSupportActionBar().setTitle(subBox.getName());
-        }
 
         //Reference
+        ImageView detailImage  = (ImageView) view.findViewById(R.id.detail_image);
         TextView titleText = (TextView) view.findViewById(R.id.title_text);
         TextView priceText = (TextView) view.findViewById(R.id.detail_price_text);
         TextView detailText = (TextView) view.findViewById(R.id.detail_text);
-        final FloatingActionButton detailFAB = (FloatingActionButton) view.findViewById(R.id.add_or_done_fab);
+        final Button detailButton = (Button) view.findViewById(R.id.detail_button);
 
         titleText.setText(subBox.getName());
+        titleText.setSelected(true);
+
+        Picasso.with(getContext()).load(subBox.getImgUrl()).resize(200,200).centerCrop().into(detailImage);
 
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault());
         double priceValue = subBox.getPrice();
@@ -87,18 +77,18 @@ public class DetailFragment extends Fragment {
 
         detailText.setText(subBox.getDescription());
 
-        //Change the icon to done if it is in the checkout
+        //Change the text to done if it is already in the checkout
         if (SubBoxHelper.getsInstance(getContext()).isSubBoxInCheckOut(mIdSelected))
-            detailFAB.setImageResource(R.drawable.ic_done);
+            detailButton.setText(R.string.detail_in_cart);
 
-        detailFAB.setOnClickListener(new View.OnClickListener() {
+        detailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Add to checkout and change the icon to done
+                //Add to checkout and change the text to done
                 if(!SubBoxHelper.getsInstance(getContext()).isSubBoxInCheckOut(mIdSelected)){
                     SubBoxHelper.getsInstance(getContext()).addSubBoxToCheckOut(mIdSelected);
-                    detailFAB.setImageResource(R.drawable.ic_done);
-                    Snackbar.make(view, "Item added to cart.", Snackbar.LENGTH_LONG).show();
+                    detailButton.setText(R.string.detail_in_cart);
+                    Toast.makeText(getContext(), "Added to cart", Toast.LENGTH_SHORT).show();
                 }
             }
         });

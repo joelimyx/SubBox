@@ -9,12 +9,14 @@ public class CheckOutItem {
     private String mName;
     private int mCount;
     private double mPrice;
+    private String mImgUrl;
 
-    public CheckOutItem(int itemId, String name, int count, double price) {
+    public CheckOutItem(int itemId, String name, int count, double price,String imgUrl) {
         mItemId = itemId;
         mName = name;
         mCount = count;
         mPrice = price;
+        mImgUrl= imgUrl;
     }
 
     public int getItemId() {
@@ -32,6 +34,11 @@ public class CheckOutItem {
     public double getSubtotalPrice() {
         return mPrice*mCount;
     }
+
+    public String getImgUrl() {
+        return mImgUrl;
+    }
+
     public void addOrMinusCount(char operation){
         switch (operation){
             case '-':

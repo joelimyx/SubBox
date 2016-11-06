@@ -19,20 +19,22 @@ import java.util.List;
 public class SubBoxHelper extends SQLiteOpenHelper {
     private static SubBoxHelper sInstance;
     public static final String DATABASE_NAME = "subbox.db";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
     public static final String ITEM_TABLE_NAME = "item_table";
     public static final String COL_ID = "id";
     public static final String COL_NAME = "name";
     public static final String COL_PRICE = "price";
     public static final String COL_DETAIL = "detail";
-    public static final String [] COL_ITEMS_SELECTION = new String[]{COL_ID,COL_NAME,COL_PRICE,COL_DETAIL};
+    public static final String COL_IMG_URL= "img_url";
+    public static final String [] COL_ITEMS_SELECTION = new String[]{COL_ID,COL_NAME,COL_PRICE,COL_DETAIL,COL_IMG_URL};
     public static final String CREATE_ITEM_TABLE =
             "CREATE TABLE "+ITEM_TABLE_NAME+" ( "+
             COL_ID+ " INTEGER PRIMARY KEY, "+
             COL_NAME+" TEXT, "+
             COL_PRICE+" REAL,"+
-            COL_DETAIL+" TEXT )";
+            COL_DETAIL+" TEXT, "+
+            COL_IMG_URL+" TEXT )";
 
     public static final String CHECKOUT_TABLE_NAME = "checkout_table";
     public static final String COL_ITEM_ID ="item_id";
@@ -83,7 +85,8 @@ public class SubBoxHelper extends SQLiteOpenHelper {
                         cursor.getString(cursor.getColumnIndex(COL_NAME)),
                         cursor.getDouble(cursor.getColumnIndex(COL_PRICE)),
                         cursor.getString(cursor.getColumnIndex(COL_DETAIL)),
-                        cursor.getInt(cursor.getColumnIndex(COL_ID))));
+                        cursor.getInt(cursor.getColumnIndex(COL_ID)),
+                        cursor.getString(cursor.getColumnIndex(COL_IMG_URL))));
                 cursor.moveToNext();
             }
         }
@@ -93,7 +96,8 @@ public class SubBoxHelper extends SQLiteOpenHelper {
 
     public List<SubBox> sortListByPrice(){
         SQLiteDatabase db  = getReadableDatabase();
-        Cursor cursor = db.query(ITEM_TABLE_NAME,
+        Cursor cursor = db.query(
+                ITEM_TABLE_NAME,
                 COL_ITEMS_SELECTION,
                 null,
                 null,
@@ -107,7 +111,8 @@ public class SubBoxHelper extends SQLiteOpenHelper {
                         cursor.getString(cursor.getColumnIndex(COL_NAME)),
                         cursor.getDouble(cursor.getColumnIndex(COL_PRICE)),
                         cursor.getString(cursor.getColumnIndex(COL_DETAIL)),
-                        cursor.getInt(cursor.getColumnIndex(COL_ID))));
+                        cursor.getInt(cursor.getColumnIndex(COL_ID)),
+                        cursor.getString(cursor.getColumnIndex(COL_IMG_URL))));
                 cursor.moveToNext();
             }
         }
@@ -121,7 +126,8 @@ public class SubBoxHelper extends SQLiteOpenHelper {
      */
     public List<SubBox> getSearchList(String query){
         SQLiteDatabase db  = getReadableDatabase();
-        Cursor cursor = db.query(ITEM_TABLE_NAME,
+        Cursor cursor = db.query(
+                ITEM_TABLE_NAME,
                 COL_ITEMS_SELECTION,
                 COL_NAME+" LIKE ? ",
                 new String[]{"%"+query+"%"},
@@ -133,7 +139,8 @@ public class SubBoxHelper extends SQLiteOpenHelper {
                         cursor.getString(cursor.getColumnIndex(COL_NAME)),
                         cursor.getDouble(cursor.getColumnIndex(COL_PRICE)),
                         cursor.getString(cursor.getColumnIndex(COL_DETAIL)),
-                        cursor.getInt(cursor.getColumnIndex(COL_ID))));
+                        cursor.getInt(cursor.getColumnIndex(COL_ID)),
+                        cursor.getString(cursor.getColumnIndex(COL_IMG_URL))));
                 cursor.moveToNext();
             }
         }
@@ -149,7 +156,7 @@ public class SubBoxHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(
                 ITEM_TABLE_NAME,
-                new String[]{COL_ID,COL_NAME,COL_PRICE,COL_DETAIL},
+                COL_ITEMS_SELECTION,
                 COL_ID+" = ?",
                 new String[]{String.valueOf(id)},
                 null,null,null,null);
@@ -159,7 +166,8 @@ public class SubBoxHelper extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndex(COL_NAME)),
                     cursor.getDouble(cursor.getColumnIndex(COL_PRICE)),
                     cursor.getString(cursor.getColumnIndex(COL_DETAIL)),
-                    cursor.getInt(cursor.getColumnIndex(COL_ID)));
+                    cursor.getInt(cursor.getColumnIndex(COL_ID)),
+                    cursor.getString(cursor.getColumnIndex(COL_IMG_URL)));
             cursor.close();
             return subBox;
         }else {
@@ -210,7 +218,7 @@ public class SubBoxHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(
-                "SELECT "+ITEM_TABLE_NAME+"."+COL_ID+", "+COL_NAME+", "+COL_PRICE+", "+COL_COUNT+
+                "SELECT "+ITEM_TABLE_NAME+"."+COL_ID+", "+COL_NAME+", "+COL_PRICE+", "+COL_COUNT+", "+COL_IMG_URL+
                 " FROM "+ITEM_TABLE_NAME+" JOIN "+ CHECKOUT_TABLE_NAME +
                 " WHERE " + ITEM_TABLE_NAME+"."+COL_ID+
                 " = "+ CHECKOUT_TABLE_NAME +"."+COL_ITEM_ID,null);
@@ -220,7 +228,8 @@ public class SubBoxHelper extends SQLiteOpenHelper {
                 list.add(new CheckOutItem(cursor.getInt(cursor.getColumnIndex(COL_ID)),
                         cursor.getString(cursor.getColumnIndex(COL_NAME)),
                         cursor.getInt(cursor.getColumnIndex(COL_COUNT)),
-                        cursor.getDouble(cursor.getColumnIndex(COL_PRICE))
+                        cursor.getDouble(cursor.getColumnIndex(COL_PRICE)),
+                        cursor.getString(cursor.getColumnIndex(COL_IMG_URL))
                         ));
                 cursor.moveToNext();
             }

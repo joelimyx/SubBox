@@ -1,14 +1,14 @@
-package com.joelimyx.subbox.CheckOut;
+package com.joelimyx.subbox.checkout;
 
-import android.content.Context;
 import android.content.DialogInterface;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,17 +19,20 @@ import android.widget.Toast;
 import com.joelimyx.subbox.Classes.CheckOutItem;
 import com.joelimyx.subbox.R;
 import com.joelimyx.subbox.dbassethelper.SubBoxHelper;
+import com.joelimyx.subbox.detail.DetailFragment;
+import com.joelimyx.subbox.detail.DetailScrollingActivity;
 
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
 
-public class CheckOutFragment extends Fragment implements CheckOutAdapter.OnCheckOutItemModifyListener {
+public class CheckOutFragment extends Fragment
+        implements CheckOutAdapter.OnCheckOutItemModifyListener,CheckOutAdapter.OnCheckOutItemSelectedListener {
 
     private static final String ARG_PARAM1 = "param1";
 
-    private int mCheckoutSelectedId;
+    private boolean mIsTwoPane;
     //private OnCheckoutItemSelectedListener mListener;
 
     TextView mSubtotalText,mTaxText, mTotalText;
@@ -37,10 +40,10 @@ public class CheckOutFragment extends Fragment implements CheckOutAdapter.OnChec
     public CheckOutFragment() {
     }
 
-    public static CheckOutFragment newInstance(int param1) {
+    public static CheckOutFragment newInstance(boolean param1) {
         CheckOutFragment fragment = new CheckOutFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_PARAM1, param1);
+        args.putBoolean(ARG_PARAM1, param1);
         fragment.setArguments(args);
         return fragment;
     }
@@ -49,7 +52,9 @@ public class CheckOutFragment extends Fragment implements CheckOutAdapter.OnChec
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mCheckoutSelectedId = getArguments().getInt(ARG_PARAM1);
+            mIsTwoPane = getArguments().getBoolean(ARG_PARAM1);
+        }else{
+            mIsTwoPane =true;
         }
     }
 
@@ -74,7 +79,7 @@ public class CheckOutFragment extends Fragment implements CheckOutAdapter.OnChec
         //Recycler View
         RecyclerView recyclerview = (RecyclerView) view.findViewById(R.id.checkout_recyclerview);
         recyclerview.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
-        final CheckOutAdapter adapter = new CheckOutAdapter(checkOutItems,this);
+        final CheckOutAdapter adapter = new CheckOutAdapter(checkOutItems,this,this,getContext());
         recyclerview.setAdapter(adapter);
 
         UpdateTotal();
@@ -141,6 +146,18 @@ public class CheckOutFragment extends Fragment implements CheckOutAdapter.OnChec
     @Override
     public void onCheckOutItemModify() {
         UpdateTotal();
+    }
+
+    @Override
+    public void onCheckOutItemSelected(int id) {
+        if (mIsTwoPane){
+            DetailFragment fragment = DetailFragment.newInstance(id);
+            getFragmentManager().beginTransaction().replace(R.id.detail_or_checkout_container,fragment).addToBackStack(null).commit();
+        }else{
+            Intent intent = new Intent(getContext(), DetailScrollingActivity.class);
+            intent.putExtra("id",id);
+            startActivity(intent);
+        }
     }
 
 
