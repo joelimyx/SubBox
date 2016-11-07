@@ -34,7 +34,7 @@
             android:layout_height="match_parent"
             xmlns:android="http://schemas.android.com/apk/res/android"/>
     </LinearLayout>
-    <FrameLayout
+    <android.support.design.widget.CoordinatorLayout
         android:id="@+id/is_checkout_landscape"
         android:layout_width="0dp"
         android:layout_height="0dp"/>

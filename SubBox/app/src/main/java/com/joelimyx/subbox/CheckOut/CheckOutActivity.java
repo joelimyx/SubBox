@@ -27,6 +27,7 @@ public class CheckOutActivity extends AppCompatActivity{// implements CheckOutFr
         CheckOutFragment checkOutFragment = CheckOutFragment.newInstance(false);
         getSupportFragmentManager().beginTransaction().replace(R.id.checkout_fragment_container, checkOutFragment).commit();
     }
+
     //--------------------------------------------------------------------------------------------------------------------
     //Check to see if it is in two pane
     //--------------------------------------------------------------------------------------------------------------------

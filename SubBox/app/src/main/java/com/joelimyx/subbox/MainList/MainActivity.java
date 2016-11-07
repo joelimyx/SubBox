@@ -1,5 +1,6 @@
 package com.joelimyx.subbox.mainlist;
 
+import android.app.Fragment;
 import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -57,7 +58,6 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
     }
 
     //--------------------------------------------------------------------------------------------------------------------

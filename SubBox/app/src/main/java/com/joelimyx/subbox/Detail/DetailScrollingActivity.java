@@ -39,9 +39,7 @@ public class DetailScrollingActivity extends AppCompatActivity {
 
         //Toolbar
         setSupportActionBar(mToolbar);
-        if(getSupportActionBar()!=null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("");
         Picasso.with(this)
                 .load(SubBoxHelper.getsInstance(this).getSubBoxByID(id).getImgUrl())

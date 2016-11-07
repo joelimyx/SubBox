@@ -27,14 +27,16 @@ public class SubBoxHelper extends SQLiteOpenHelper {
     public static final String COL_PRICE = "price";
     public static final String COL_DETAIL = "detail";
     public static final String COL_IMG_URL= "img_url";
-    public static final String [] COL_ITEMS_SELECTION = new String[]{COL_ID,COL_NAME,COL_PRICE,COL_DETAIL,COL_IMG_URL};
+    public static final String COL_TYPE = "type";
+    public static final String [] COL_ITEMS_SELECTION = new String[]{COL_ID,COL_NAME,COL_PRICE,COL_DETAIL,COL_IMG_URL,COL_TYPE};
     public static final String CREATE_ITEM_TABLE =
             "CREATE TABLE "+ITEM_TABLE_NAME+" ( "+
             COL_ID+ " INTEGER PRIMARY KEY, "+
             COL_NAME+" TEXT, "+
             COL_PRICE+" REAL,"+
             COL_DETAIL+" TEXT, "+
-            COL_IMG_URL+" TEXT )";
+            COL_IMG_URL+" TEXT,"+
+            COL_TYPE+" TEXT )";
 
     public static final String CHECKOUT_TABLE_NAME = "checkout_table";
     public static final String COL_ITEM_ID ="item_id";
@@ -86,7 +88,9 @@ public class SubBoxHelper extends SQLiteOpenHelper {
                         cursor.getDouble(cursor.getColumnIndex(COL_PRICE)),
                         cursor.getString(cursor.getColumnIndex(COL_DETAIL)),
                         cursor.getInt(cursor.getColumnIndex(COL_ID)),
-                        cursor.getString(cursor.getColumnIndex(COL_IMG_URL))));
+                        cursor.getString(cursor.getColumnIndex(COL_IMG_URL)),
+                        cursor.getString(cursor.getColumnIndex(COL_TYPE))
+                        ));
                 cursor.moveToNext();
             }
         }
@@ -112,7 +116,9 @@ public class SubBoxHelper extends SQLiteOpenHelper {
                         cursor.getDouble(cursor.getColumnIndex(COL_PRICE)),
                         cursor.getString(cursor.getColumnIndex(COL_DETAIL)),
                         cursor.getInt(cursor.getColumnIndex(COL_ID)),
-                        cursor.getString(cursor.getColumnIndex(COL_IMG_URL))));
+                        cursor.getString(cursor.getColumnIndex(COL_IMG_URL)),
+                        cursor.getString(cursor.getColumnIndex(COL_TYPE))
+                        ));
                 cursor.moveToNext();
             }
         }
@@ -140,7 +146,9 @@ public class SubBoxHelper extends SQLiteOpenHelper {
                         cursor.getDouble(cursor.getColumnIndex(COL_PRICE)),
                         cursor.getString(cursor.getColumnIndex(COL_DETAIL)),
                         cursor.getInt(cursor.getColumnIndex(COL_ID)),
-                        cursor.getString(cursor.getColumnIndex(COL_IMG_URL))));
+                        cursor.getString(cursor.getColumnIndex(COL_IMG_URL)),
+                        cursor.getString(cursor.getColumnIndex(COL_TYPE))
+                        ));
                 cursor.moveToNext();
             }
         }
@@ -167,7 +175,8 @@ public class SubBoxHelper extends SQLiteOpenHelper {
                     cursor.getDouble(cursor.getColumnIndex(COL_PRICE)),
                     cursor.getString(cursor.getColumnIndex(COL_DETAIL)),
                     cursor.getInt(cursor.getColumnIndex(COL_ID)),
-                    cursor.getString(cursor.getColumnIndex(COL_IMG_URL)));
+                    cursor.getString(cursor.getColumnIndex(COL_IMG_URL)),
+                    cursor.getString(cursor.getColumnIndex(COL_TYPE)));
             cursor.close();
             return subBox;
         }else {
