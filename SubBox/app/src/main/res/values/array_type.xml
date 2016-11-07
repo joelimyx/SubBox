@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="type">
+        <item>Geek/Gaming</item>
+        <item>Personal Care</item>
+        <item>Food/Beverage</item>
+        <item>Clothing</item>
+        <item>Outdoor Gear</item>
+    </string-array>
+</resources>

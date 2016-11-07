@@ -12,6 +12,9 @@
         android:title="Go to cart"
         android:icon="@drawable/ic_shopping_cart"
         app:showAsAction="always"/>
+    <item android:id="@+id/filter"
+        android:title="Filter by ..."
+        app:showAsAction="never"/>
     <item android:id="@+id/price_sort"
         android:title="Sort by price"
         app:showAsAction="never"/>

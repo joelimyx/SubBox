@@ -88,8 +88,7 @@ public class SubBoxHelper extends SQLiteOpenHelper {
                         cursor.getDouble(cursor.getColumnIndex(COL_PRICE)),
                         cursor.getString(cursor.getColumnIndex(COL_DETAIL)),
                         cursor.getInt(cursor.getColumnIndex(COL_ID)),
-                        cursor.getString(cursor.getColumnIndex(COL_IMG_URL)),
-                        cursor.getString(cursor.getColumnIndex(COL_TYPE))
+                        cursor.getString(cursor.getColumnIndex(COL_IMG_URL))
                         ));
                 cursor.moveToNext();
             }
@@ -116,8 +115,7 @@ public class SubBoxHelper extends SQLiteOpenHelper {
                         cursor.getDouble(cursor.getColumnIndex(COL_PRICE)),
                         cursor.getString(cursor.getColumnIndex(COL_DETAIL)),
                         cursor.getInt(cursor.getColumnIndex(COL_ID)),
-                        cursor.getString(cursor.getColumnIndex(COL_IMG_URL)),
-                        cursor.getString(cursor.getColumnIndex(COL_TYPE))
+                        cursor.getString(cursor.getColumnIndex(COL_IMG_URL))
                         ));
                 cursor.moveToNext();
             }
@@ -146,14 +144,55 @@ public class SubBoxHelper extends SQLiteOpenHelper {
                         cursor.getDouble(cursor.getColumnIndex(COL_PRICE)),
                         cursor.getString(cursor.getColumnIndex(COL_DETAIL)),
                         cursor.getInt(cursor.getColumnIndex(COL_ID)),
-                        cursor.getString(cursor.getColumnIndex(COL_IMG_URL)),
-                        cursor.getString(cursor.getColumnIndex(COL_TYPE))
+                        cursor.getString(cursor.getColumnIndex(COL_IMG_URL))
                         ));
                 cursor.moveToNext();
             }
         }
         cursor.close();
         return list;
+    }
+    public List<SubBox> getFilteredList(List<String> types){
+        SQLiteDatabase db = getReadableDatabase();
+        //Convert the list into array
+        String [] query = types.toArray(new String[types.size()]);
+
+        //Use IN OPERATOR FOR MULTIPLE SELECTION
+        Cursor cursor = db.rawQuery("SELECT * FROM "+ITEM_TABLE_NAME+" WHERE "+
+                COL_TYPE+" IN ("+createPlaceHolderForQuery(query.length)+")",query);
+        List<SubBox> list = new ArrayList<>();
+        if (cursor.moveToFirst()){
+            while (!cursor.isAfterLast()){
+                list.add(new SubBox(
+                        cursor.getString(cursor.getColumnIndex(COL_NAME)),
+                        cursor.getDouble(cursor.getColumnIndex(COL_PRICE)),
+                        cursor.getString(cursor.getColumnIndex(COL_DETAIL)),
+                        cursor.getInt(cursor.getColumnIndex(COL_ID)),
+                        cursor.getString(cursor.getColumnIndex(COL_IMG_URL))
+                ));
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        return list;
+    }
+
+    /**
+     *
+     * @param length = length of the array
+     * @return
+     */
+    private String createPlaceHolderForQuery(int length){
+        if (length<=0){
+            return "";
+        }
+        StringBuilder sb = new StringBuilder(length);
+        sb.append("?");
+        for (int i = 1; i < length ; i++) {
+            sb.append(",?");
+        }
+
+        return sb.toString();
     }
 
     /*----------------------------------------------------------
@@ -175,8 +214,8 @@ public class SubBoxHelper extends SQLiteOpenHelper {
                     cursor.getDouble(cursor.getColumnIndex(COL_PRICE)),
                     cursor.getString(cursor.getColumnIndex(COL_DETAIL)),
                     cursor.getInt(cursor.getColumnIndex(COL_ID)),
-                    cursor.getString(cursor.getColumnIndex(COL_IMG_URL)),
-                    cursor.getString(cursor.getColumnIndex(COL_TYPE)));
+                    cursor.getString(cursor.getColumnIndex(COL_IMG_URL))
+                    );
             cursor.close();
             return subBox;
         }else {

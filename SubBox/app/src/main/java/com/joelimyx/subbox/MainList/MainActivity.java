@@ -4,9 +4,11 @@ import android.app.Fragment;
 import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,6 +28,7 @@ import com.joelimyx.subbox.R;
 import com.joelimyx.subbox.dbassethelper.DBAssetHelper;
 import com.joelimyx.subbox.dbassethelper.SubBoxHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -125,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
                 mAdapter.replaceData(restore);
                 return true;
 
-            //Menu item for cart to start DetailActivity or DetailFragment
+            //Menu item for cart to start CheckOut Activity or CheckOut Fragment
             case R.id.cart:
                 if(mTwoPane){
                     CheckOutFragment checkOutFragment = new CheckOutFragment();
@@ -134,6 +137,36 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
                     Intent intent = new Intent(getApplicationContext(),CheckOutActivity.class);
                     startActivityForResult(intent,CHECKOUT_REQUEST_CODE);
                 }
+                return true;
+            case R.id.filter:
+
+                //Setup multiple checkbox for type filter in dialog
+                final String [] type = getResources().getStringArray(R.array.type);
+                final List<String> selectedType = new ArrayList<>();
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMultiChoiceItems(type, null, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i, boolean isChecked) {
+                        if (isChecked){
+                            selectedType.add(type[i]);
+                        }else if(selectedType.contains(type[i])){
+                            selectedType.remove(type[i]);
+                        }
+                    }
+                })
+                //Setup Positive and negative button in dialig
+                .setPositiveButton("Filter", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (selectedType.size()!=0) {
+                            List<SubBox> filteredList = SubBoxHelper.getsInstance(getApplicationContext()).getFilteredList(selectedType);
+                            mAdapter.replaceData(filteredList);
+                            selectedType.clear();
+                        }
+                    }
+                }).setNegativeButton("Cancel", null).create().show();
+
+                return true;
         }
         return true;
     }

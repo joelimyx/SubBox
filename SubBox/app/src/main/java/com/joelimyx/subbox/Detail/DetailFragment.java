@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,6 +68,9 @@ public class DetailFragment extends Fragment {
         final Button detailButton = (Button) view.findViewById(R.id.detail_button);
 
         titleText.setText(subBox.getName());
+        titleText.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+        titleText.setSingleLine(true);
+        titleText.setMarqueeRepeatLimit(5);
         titleText.setSelected(true);
 
         Picasso.with(getContext()).load(subBox.getImgUrl()).resize(200,200).centerCrop().into(detailImage);
