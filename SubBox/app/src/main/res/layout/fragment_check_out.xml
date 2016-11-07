@@ -1,4 +1,4 @@
-<RelativeLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,20 +7,22 @@
     android:fitsSystemWindows="true"
     android:background="#e5e5f6fa"
     tools:context="com.joelimyx.subbox.checkout.CheckOutActivity">
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/checkout_recyclerview"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:layout_above="@+id/checkout_relative"/>
+        android:layout_marginBottom="95dp">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/checkout_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"/>
+    </RelativeLayout>
     <RelativeLayout
-        android:id="@id/checkout_relative"
         android:layout_width="match_parent"
         android:layout_height="95dp"
         android:background="#003ec2"
         android:padding="16dp"
-        android:layout_alignParentBottom="true">
+        android:layout_gravity="bottom">
         <TextView
             android:id="@+id/subtotal_text"
             android:layout_width="wrap_content"
@@ -57,4 +59,4 @@
         </android.support.v7.widget.CardView>
     </RelativeLayout>
 
-</RelativeLayout>
+</FrameLayout>

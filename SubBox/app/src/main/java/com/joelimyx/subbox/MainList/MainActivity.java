@@ -1,6 +1,5 @@
 package com.joelimyx.subbox.mainlist;
 
-import android.app.Fragment;
 import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -132,10 +131,11 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
             case R.id.cart:
                 if(mTwoPane){
                     CheckOutFragment checkOutFragment = new CheckOutFragment();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.detail_or_checkout_container,checkOutFragment).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.detail_or_checkout_container,checkOutFragment).addToBackStack(null).commit();
                 }else {
                     Intent intent = new Intent(getApplicationContext(),CheckOutActivity.class);
                     startActivityForResult(intent,CHECKOUT_REQUEST_CODE);
+                    overridePendingTransition(R.anim.checkout_scale_in,R.anim.no_animation);
                 }
                 return true;
             case R.id.filter:
@@ -209,6 +209,8 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
             Intent intent = new Intent(this, DetailScrollingActivity.class);
             intent.putExtra(SubBoxAdapter.SELECTED_ID, id);
             startActivityForResult(intent,DETAIL_REQUEST_CODE);
+            overridePendingTransition(R.anim.in_from_right,R.anim.fade_out);
         }
     }
+
 }

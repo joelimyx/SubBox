@@ -80,4 +80,10 @@ public class DetailScrollingActivity extends AppCompatActivity {
         }
         return true;
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.pop_in,R.anim.out_to_right);
+    }
 }
