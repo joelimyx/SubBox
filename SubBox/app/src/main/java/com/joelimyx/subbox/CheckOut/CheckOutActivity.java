@@ -1,20 +1,19 @@
 package com.joelimyx.subbox.checkout;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.joelimyx.subbox.R;
-import com.joelimyx.subbox.mainlist.SubBoxAdapter;
 
-public class CheckOutActivity extends AppCompatActivity{// implements CheckOutFragment.OnCheckoutItemSelectedListener{
+public class CheckOutActivity extends AppCompatActivity{
     private boolean mIsLandScape;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_out);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -39,9 +38,4 @@ public class CheckOutActivity extends AppCompatActivity{// implements CheckOutFr
         }
         super.onResume();
     }
-//
-//    @Override
-//    public void onCheckoutItemSelect(int id) {
-//
-//    }
 }

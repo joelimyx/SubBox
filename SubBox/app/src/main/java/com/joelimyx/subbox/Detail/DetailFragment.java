@@ -67,10 +67,11 @@ public class DetailFragment extends Fragment {
         TextView detailText = (TextView) view.findViewById(R.id.detail_text);
         final Button detailButton = (Button) view.findViewById(R.id.detail_button);
 
+        //Setup title and configure to automatically scroll sideway if too long
         titleText.setText(subBox.getName());
         titleText.setEllipsize(TextUtils.TruncateAt.MARQUEE);
         titleText.setSingleLine(true);
-        titleText.setMarqueeRepeatLimit(5);
+        titleText.setMarqueeRepeatLimit(10);
         titleText.setSelected(true);
 
         Picasso.with(getContext()).load(subBox.getImgUrl()).resize(200,200).centerCrop().into(detailImage);

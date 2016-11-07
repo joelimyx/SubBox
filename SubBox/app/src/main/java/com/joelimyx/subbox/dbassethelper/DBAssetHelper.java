@@ -1,6 +1,7 @@
 package com.joelimyx.subbox.dbassethelper;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
@@ -14,5 +15,7 @@ public class DBAssetHelper extends SQLiteAssetHelper {
 
     public DBAssetHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        setForcedUpgrade();
     }
+
 }

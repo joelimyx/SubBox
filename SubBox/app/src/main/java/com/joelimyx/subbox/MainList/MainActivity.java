@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
         mTwoPane = container!=null;
 
         DBAssetHelper dbSetup = new DBAssetHelper(MainActivity.this);
-        dbSetup.getReadableDatabase();
+        dbSetup.getWritableDatabase();
 
         mRecyclerView.setLayoutManager(new GridLayoutManager(this,2, LinearLayoutManager.VERTICAL,false));
 
@@ -166,6 +166,9 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
                     }
                 }).setNegativeButton("Cancel", null).create().show();
 
+                return true;
+            //Go to history
+            case R.id.history:
                 return true;
         }
         return true;

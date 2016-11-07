@@ -33,7 +33,6 @@ public class CheckOutFragment extends Fragment
     private static final String ARG_PARAM1 = "param1";
 
     private boolean mIsTwoPane;
-    //private OnCheckoutItemSelectedListener mListener;
 
     TextView mSubtotalText,mTaxText, mTotalText;
 
@@ -103,23 +102,6 @@ public class CheckOutFragment extends Fragment
             }
         });
     }
-//
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnCheckoutItemSelectedListener) {
-//            mListener = (OnCheckoutItemSelectedListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnCheckoutItemSelectedListener");
-//        }
-//    }
-//
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        mListener = null;
-//    }
 
     /**--------------------------------------------------------------------------------------------------------------------
      * Helper method to update the total
@@ -159,10 +141,4 @@ public class CheckOutFragment extends Fragment
             startActivity(intent);
         }
     }
-
-
-//    interface OnCheckoutItemSelectedListener {
-//        // TODO: Update argument type and name
-//        void onCheckoutItemSelect(int id);
-//    }
 }

@@ -6,15 +6,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
     android:background="#e5e5f6fa"
-    tools:context="com.joelimyx.subbox.checkout.CheckOutActivity"
-    app:elevation="@dimen/app_bar_height">
+    tools:context="com.joelimyx.subbox.checkout.CheckOutActivity">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/checkout_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"/>
+        android:layout_margin="16dp"
+        android:layout_above="@+id/checkout_relative"/>
     <RelativeLayout
+        android:id="@id/checkout_relative"
         android:layout_width="match_parent"
         android:layout_height="95dp"
         android:background="#003ec2"
