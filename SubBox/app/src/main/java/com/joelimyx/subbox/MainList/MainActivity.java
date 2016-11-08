@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -204,7 +205,9 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
 
         if(mTwoPane){
             DetailFragment detailFragment = DetailFragment.newInstance(id);
-            getSupportFragmentManager().beginTransaction().replace(R.id.detail_or_checkout_container,detailFragment).commit();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction().replace(R.id.detail_or_checkout_container,detailFragment);
+            ft.setCustomAnimations(R.anim.in_from_right,R.anim.fade_out);
+            ft.commit();
         }else {
             Intent intent = new Intent(this, DetailScrollingActivity.class);
             intent.putExtra(SubBoxAdapter.SELECTED_ID, id);

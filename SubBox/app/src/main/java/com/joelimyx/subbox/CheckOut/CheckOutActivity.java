@@ -18,9 +18,9 @@ public class CheckOutActivity extends AppCompatActivity{
         setSupportActionBar(toolbar);
 
         if(findViewById(R.id.is_checkout_landscape)==null){
-            mIsLandScape =false;
+            mIsLandScape = false;
         }else{
-            mIsLandScape =true;
+            mIsLandScape = true;
         }
 
         CheckOutFragment checkOutFragment = CheckOutFragment.newInstance(false);
@@ -37,5 +37,11 @@ public class CheckOutActivity extends AppCompatActivity{
             finish();
         }
         super.onResume();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.no_animation, R.anim.checkout_scale_out);
     }
 }

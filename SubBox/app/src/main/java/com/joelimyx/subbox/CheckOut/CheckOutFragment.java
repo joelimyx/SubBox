@@ -53,7 +53,7 @@ public class CheckOutFragment extends Fragment
         if (getArguments() != null) {
             mIsTwoPane = getArguments().getBoolean(ARG_PARAM1);
         }else{
-            mIsTwoPane =true;
+            mIsTwoPane = true;
         }
     }
 
