@@ -107,11 +107,7 @@ public class CheckOutFragment extends Fragment
      * Helper method to update the total
      --------------------------------------------------------------------------------------------------------------------*/
     public void UpdateTotal(){
-        List<CheckOutItem> checkOutItems = SubBoxHelper.getsInstance(getContext()).getCheckoutList();
-        double subtotal= 0d;
-        for (CheckOutItem item: checkOutItems) {
-            subtotal+=item.getSubtotalPrice();
-        }
+        double subtotal= SubBoxHelper.getsInstance(getContext()).getSubtotal();
         double tax = subtotal*0.0875d;
         double total = subtotal+tax;
 

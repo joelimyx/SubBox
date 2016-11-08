@@ -7,9 +7,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.joelimyx.subbox.Classes.CheckOutItem;
+import com.joelimyx.subbox.Classes.HistoryItem;
 import com.joelimyx.subbox.Classes.SubBox;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -18,18 +20,18 @@ import java.util.List;
 
 public class SubBoxHelper extends SQLiteOpenHelper {
     private static SubBoxHelper sInstance;
-    public static final String DATABASE_NAME = "subbox.db";
-    public static final int DATABASE_VERSION = 2;
+    private static final String DATABASE_NAME = "subbox.db";
+    private static final int DATABASE_VERSION = 2;
 
-    public static final String ITEM_TABLE_NAME = "item_table";
-    public static final String COL_ID = "id";
-    public static final String COL_NAME = "name";
-    public static final String COL_PRICE = "price";
-    public static final String COL_DETAIL = "detail";
-    public static final String COL_IMG_URL= "img_url";
-    public static final String COL_TYPE = "type";
-    public static final String [] COL_ITEMS_SELECTION = new String[]{COL_ID,COL_NAME,COL_PRICE,COL_DETAIL,COL_IMG_URL,COL_TYPE};
-    public static final String CREATE_ITEM_TABLE =
+    private static final String ITEM_TABLE_NAME = "item_table";
+    private static final String COL_ID = "id";
+    private static final String COL_NAME = "name";
+    private static final String COL_PRICE = "price";
+    private static final String COL_DETAIL = "detail";
+    private static final String COL_IMG_URL= "img_url";
+    private static final String COL_TYPE = "type";
+    private static final String [] COL_ITEMS_SELECTION = new String[]{COL_ID,COL_NAME,COL_PRICE,COL_DETAIL,COL_IMG_URL,COL_TYPE};
+    private static final String CREATE_ITEM_TABLE =
             "CREATE TABLE "+ITEM_TABLE_NAME+" ( "+
             COL_ID+ " INTEGER PRIMARY KEY, "+
             COL_NAME+" TEXT, "+
@@ -38,14 +40,23 @@ public class SubBoxHelper extends SQLiteOpenHelper {
             COL_IMG_URL+" TEXT,"+
             COL_TYPE+" TEXT )";
 
-    public static final String CHECKOUT_TABLE_NAME = "checkout_table";
-    public static final String COL_ITEM_ID ="item_id";
-    public static final String COL_COUNT = "count";
-    public static final String CREATE_CHECKOUT_TABLE =
+    private static final String CHECKOUT_TABLE_NAME = "checkout_table";
+    private static final String COL_ITEM_ID ="item_id";
+    private static final String COL_COUNT = "count";
+    private static final String CREATE_CHECKOUT_TABLE =
             "CREATE TABLE "+ CHECKOUT_TABLE_NAME +" ( "+
             COL_ID+ " INTEGER PRIMARY KEY, "+
             COL_ITEM_ID+ " INTEGER, "+
             COL_COUNT+ " INTEGER )";
+
+    private static final String HISTORY_TABLE_NAME = "history_table";
+    private static final String COL_DATE = "date";
+    private static final String COL_SUBTOTAL = "subtotal";
+    private static final String CREATE_HISTORY_TABLE =
+            "CREATE TABLE "+HISTORY_TABLE_NAME+" ( "+
+            COL_ID+" INTEGER PRIMARY KEY,"+
+            COL_DATE+" REAL, "+
+            COL_SUBTOTAL +" REAL )";
 
     private SubBoxHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -62,12 +73,14 @@ public class SubBoxHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_ITEM_TABLE);
         db.execSQL(CREATE_CHECKOUT_TABLE);
+        db.execSQL(CREATE_HISTORY_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         db.execSQL("DROP TABLE IF EXISTS "+ITEM_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS "+ CHECKOUT_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS "+HISTORY_TABLE_NAME);
         this.onCreate(db);
     }
 
@@ -197,9 +210,9 @@ public class SubBoxHelper extends SQLiteOpenHelper {
     }
 
     /**
-     *
+     * Helper method to dynamically add the ? place holder for IN OPERATOR
      * @param length = length of the array
-     * @return
+     * @return place holder for IN OPERATOR
      */
     private String createPlaceHolderForQuery(int length){
         if (length<=0){
@@ -244,7 +257,7 @@ public class SubBoxHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * @return true if added for snackbar to show up
+     * @return true if added for Toast to show up in DetailFragment
      */
 
     public boolean isSubBoxInCheckOut(int id){
@@ -305,6 +318,14 @@ public class SubBoxHelper extends SQLiteOpenHelper {
         return list;
     }
 
+    public double getSubtotal(){
+        List<CheckOutItem> checkOutItems = getCheckoutList();
+        double subtotal= 0d;
+        for (CheckOutItem item: checkOutItems) {
+            subtotal+=item.getSubtotalPrice();
+        }
+        return subtotal;
+    }
 
     public void modifyCheckOutItemCount(int newCount, int itemId){
         SQLiteDatabase db = getWritableDatabase();
@@ -325,7 +346,33 @@ public class SubBoxHelper extends SQLiteOpenHelper {
 
     public void clearCheckOut(){
         SQLiteDatabase db  = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("date", Calendar.getInstance().getTimeInMillis());
+        values.put("subtotal",getSubtotal());
+        db.insert(HISTORY_TABLE_NAME,null,values);
         db.delete(CHECKOUT_TABLE_NAME,null,null);
         db.close();
     }
+    //--------------------------------------------------------------------------------------------------------------------
+    //History AREA
+    //--------------------------------------------------------------------------------------------------------------------
+    public List<HistoryItem> getHistoryList(){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(
+                "SELECT "+HISTORY_TABLE_NAME+"."+COL_ID+", "+COL_DATE+", "+ COL_SUBTOTAL +
+                        " FROM "+HISTORY_TABLE_NAME,null);
+        List<HistoryItem> list = new ArrayList<>();
+        if (cursor.moveToFirst()){
+            while (!cursor.isAfterLast()){
+                list.add(new HistoryItem(cursor.getInt(cursor.getColumnIndex(COL_ID)),
+                        cursor.getLong(cursor.getColumnIndex(COL_DATE)),
+                        cursor.getLong(cursor.getColumnIndex(COL_SUBTOTAL))
+                ));
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        return list;
+    }
+
 }

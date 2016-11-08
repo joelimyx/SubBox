@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,9 +29,13 @@ import com.joelimyx.subbox.detail.DetailScrollingActivity;
 import com.joelimyx.subbox.R;
 import com.joelimyx.subbox.dbassethelper.DBAssetHelper;
 import com.joelimyx.subbox.dbassethelper.SubBoxHelper;
+import com.joelimyx.subbox.history.HistoryActivity;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -67,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
     }
 
     //--------------------------------------------------------------------------------------------------------------------
-    //Make sure the detail_or_checkout_container stay the same as it as it was(detail or checkout) before rotation
+    //Make sure the detail_or_checkout_container stay the same as it as it(detail or checkout) was before rotation
     //--------------------------------------------------------------------------------------------------------------------
 
     @Override
@@ -185,7 +188,10 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
 
                 return true;
             //Go to history
+            //IN PROGRESS
             case R.id.history:
+                Intent intent = new Intent(this, HistoryActivity.class);
+                startActivity(intent);
                 return true;
         }
         return true;
@@ -222,8 +228,7 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
         if(mTwoPane){
             DetailFragment detailFragment = DetailFragment.newInstance(id);
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction().replace(R.id.detail_or_checkout_container,detailFragment);
-            ft.setCustomAnimations(R.anim.in_from_right,R.anim.fade_out);
-            ft.commit();
+            ft.addToBackStack(null).commit();
         }else {
             Intent intent = new Intent(this, DetailScrollingActivity.class);
             intent.putExtra(SubBoxAdapter.SELECTED_ID, id);

@@ -18,12 +18,13 @@
         android:layout_height="50dp"
         android:padding="8dp"
         android:layout_gravity="bottom"
-        android:background="#8d948e8e">
+        android:background="#b37e7878">
         <TextView
             android:id="@+id/name_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#eee"/>
+            android:textColor="#eee"
+            android:textStyle="bold"/>
         <TextView
             android:id="@+id/price_text"
             android:layout_width="wrap_content"

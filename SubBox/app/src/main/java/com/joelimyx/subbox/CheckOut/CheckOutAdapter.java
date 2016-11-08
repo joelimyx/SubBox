@@ -28,7 +28,7 @@ import butterknife.ButterKnife;
 
 public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckOutViewHolder> {
 
-    private List<CheckOutItem> mCheckOutItems;
+    private List<CheckOutItem> mCheckOutItemList;
     private OnCheckOutItemModifyListener mCheckOutItemModifyListener;
     private Context mContext;
     private OnCheckOutItemSelectedListener mCheckOutItemSelectedListener;
@@ -43,8 +43,8 @@ public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckO
         void onCheckOutItemSelected(int id);
     }
 
-    public CheckOutAdapter(List<CheckOutItem> checkOutItems, OnCheckOutItemModifyListener checkOutItemModifyListener, OnCheckOutItemSelectedListener itemSelectedListener, Context context) {
-        mCheckOutItems = checkOutItems;
+    public CheckOutAdapter(List<CheckOutItem> checkOutItemList, OnCheckOutItemModifyListener checkOutItemModifyListener, OnCheckOutItemSelectedListener itemSelectedListener, Context context) {
+        mCheckOutItemList = checkOutItemList;
         mCheckOutItemModifyListener = checkOutItemModifyListener;
         mContext = context;
         mCheckOutItemSelectedListener = itemSelectedListener;
@@ -60,30 +60,30 @@ public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckO
     @Override
     public void onBindViewHolder(final CheckOutViewHolder holder, int position) {
         Picasso.with(mContext)
-                .load(mCheckOutItems.get(position).getImgUrl())
+                .load(mCheckOutItemList.get(position).getImgUrl())
                 .resize(200,200).centerCrop()
                 .into(holder.mCheckoutImage);
-        holder.mCheckoutTitle.setText(mCheckOutItems.get(position).getName());
+        holder.mCheckoutTitle.setText(mCheckOutItemList.get(position).getName());
 
-        double total = mCheckOutItems.get(position).getSubtotalPrice();
+        double total = mCheckOutItemList.get(position).getSubtotalPrice();
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault());
         holder.mCheckoutPrice.setText(currencyFormat.format(total));
 
-        holder.mCountText.setText(String.valueOf(mCheckOutItems.get(position).getCount()));
+        holder.mCountText.setText(String.valueOf(mCheckOutItemList.get(position).getCount()));
 
         //Add or Minus Checkout item Count
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int holderPos = holder.getAdapterPosition();
-                CheckOutItem item = mCheckOutItems.get(holderPos);
+                CheckOutItem item = mCheckOutItemList.get(holderPos);
 
                 switch (view.getId()){
 
                 //Remove the item if the count is at 1
                 case R.id.red_minus:
                     if (item.getCount()==1){
-                        mCheckOutItems.remove(holderPos);
+                        mCheckOutItemList.remove(holderPos);
                         SubBoxHelper.getsInstance(view.getContext())
                                 .modifyCheckOutItemCount(0,item.getItemId());
                         notifyItemRemoved(holderPos);
@@ -93,7 +93,7 @@ public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckO
                         //Else minus one count
                         SubBoxHelper.getsInstance(view.getContext())
                                 .modifyCheckOutItemCount(item.getCount()-1,item.getItemId());
-                        mCheckOutItems.get(holderPos).addOrMinusCount('-');
+                        mCheckOutItemList.get(holderPos).addOrMinusCount('-');
                         notifyItemChanged(holderPos);
                         mCheckOutItemModifyListener.onCheckOutItemModify();
                     }
@@ -103,13 +103,13 @@ public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckO
                 case R.id.green_plus:
                     SubBoxHelper.getsInstance(view.getContext())
                             .modifyCheckOutItemCount(item.getCount()+1,item.getItemId());
-                    mCheckOutItems.get(holderPos).addOrMinusCount('+');
+                    mCheckOutItemList.get(holderPos).addOrMinusCount('+');
                     notifyItemChanged(holderPos);
                     mCheckOutItemModifyListener.onCheckOutItemModify();
                     break;
                 //Show detail page when item is selected in checkout
                 case R.id.checkout_item:
-                    mCheckOutItemSelectedListener.onCheckOutItemSelected(mCheckOutItems.get(holderPos).getItemId());
+                    mCheckOutItemSelectedListener.onCheckOutItemSelected(mCheckOutItemList.get(holderPos).getItemId());
                     break;
                 }
 
@@ -122,13 +122,13 @@ public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckO
     }
 
     public void clearCheckOutList(){
-        mCheckOutItems = new ArrayList<>();
+        mCheckOutItemList = new ArrayList<>();
         notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-        return mCheckOutItems.size();
+        return mCheckOutItemList.size();
     }
 
 

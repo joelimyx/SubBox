@@ -16,6 +16,7 @@ public class CheckOutActivity extends AppCompatActivity{
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Checkout");
 
         if(findViewById(R.id.is_checkout_landscape)==null){
             mIsLandScape = false;
