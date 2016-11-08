@@ -30,6 +30,7 @@ import com.joelimyx.subbox.R;
 import com.joelimyx.subbox.dbassethelper.DBAssetHelper;
 import com.joelimyx.subbox.dbassethelper.SubBoxHelper;
 import com.joelimyx.subbox.history.HistoryActivity;
+import com.joelimyx.subbox.history.HistoryFragment;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -151,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
             case R.id.cart:
                 if(mTwoPane){
                     CheckOutFragment checkOutFragment = new CheckOutFragment();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.detail_or_checkout_container,checkOutFragment).addToBackStack(null).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.detail_or_checkout_container,checkOutFragment).commit();
                 }else {
                     Intent intent = new Intent(getApplicationContext(),CheckOutActivity.class);
                     startActivityForResult(intent,CHECKOUT_REQUEST_CODE);
@@ -174,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
                         }
                     }
                 })
-                //Setup Positive and negative button in dialig
+                //Setup Positive and negative button in dialog
                 .setPositiveButton("Filter", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -188,10 +189,15 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
 
                 return true;
             //Go to history
-            //IN PROGRESS
             case R.id.history:
-                Intent intent = new Intent(this, HistoryActivity.class);
-                startActivity(intent);
+                if(mTwoPane){
+                    HistoryFragment historyFragment = new HistoryFragment();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.detail_or_checkout_container,historyFragment).commit();
+                }else {
+                    Intent intent = new Intent(this, HistoryActivity.class);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.checkout_scale_in,R.anim.no_animation);
+                }
                 return true;
         }
         return true;
