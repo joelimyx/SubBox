@@ -17,6 +17,9 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 
 import com.joelimyx.subbox.checkout.CheckOutActivity;
@@ -96,10 +99,23 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
         //Search Service activator
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =
-                (SearchView) menu.findItem(R.id.search).getActionView();
+
+        final ArrayAdapterSearchView arrayAdapterSearchView = (ArrayAdapterSearchView) MenuItemCompat.getActionView(menu.findItem(R.id.search));
+
         ComponentName componentName = new ComponentName(this,MainActivity.class);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName));
+        arrayAdapterSearchView.setSearchableInfo(searchManager.getSearchableInfo(componentName));
+
+        //Autocomplete AREA
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,R.layout.custom_autocomplete,
+                SubBoxHelper.getsInstance(this).getTitleList());
+        arrayAdapterSearchView.setAdapter(adapter);
+        arrayAdapterSearchView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                arrayAdapterSearchView.setText(adapter.getItem(i));
+            }
+        });
 
         return true;
     }

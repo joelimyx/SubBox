@@ -152,6 +152,25 @@ public class SubBoxHelper extends SQLiteOpenHelper {
         cursor.close();
         return list;
     }
+
+    public List<String> getTitleList(){
+        SQLiteDatabase db  = getReadableDatabase();
+        Cursor cursor = db.query(
+                ITEM_TABLE_NAME,
+                new String[]{COL_NAME},
+                null,null,
+                null,null,null,null);
+        List<String> list = new ArrayList<>();
+        if (cursor.moveToFirst()){
+            while (!cursor.isAfterLast()){
+                list.add(cursor.getString(cursor.getColumnIndex(COL_NAME)));
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        return list;
+    }
+
     public List<SubBox> getFilteredList(List<String> types){
         SQLiteDatabase db = getReadableDatabase();
         //Convert the list into array
