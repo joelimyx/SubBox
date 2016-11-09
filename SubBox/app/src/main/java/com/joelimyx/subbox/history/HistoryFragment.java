@@ -90,6 +90,7 @@ public class HistoryFragment extends Fragment implements HistoryAdapter.OnHistor
             Intent intent = new Intent(getContext(), TransactionActivity.class);
             intent.putExtra("id",id);
             startActivity(intent);
+            getActivity().overridePendingTransition(R.anim.in_from_right,R.anim.fade_out);
         }
     }
 }

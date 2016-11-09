@@ -41,7 +41,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".mainlist.MainActivity"/>
+                android:value="com.joelimyx.subbox.mainlist.MainActivity"/>
         </activity>
         <activity
             android:name=".detail.DetailScrollingActivity"

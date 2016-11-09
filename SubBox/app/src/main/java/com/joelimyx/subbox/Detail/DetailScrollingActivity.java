@@ -76,6 +76,7 @@ public class DetailScrollingActivity extends AppCompatActivity {
             case R.id.cart:
                 Intent intent = new Intent(getApplicationContext(),CheckOutActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.checkout_scale_in,R.anim.no_animation);
                 return true;
         }
         return true;
