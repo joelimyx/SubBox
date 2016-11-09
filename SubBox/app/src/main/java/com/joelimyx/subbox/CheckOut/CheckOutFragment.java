@@ -104,10 +104,12 @@ public class CheckOutFragment extends Fragment
     }
 
     /**--------------------------------------------------------------------------------------------------------------------
-     * Helper method to update the total
+     * Helper method to update the total of subtotal textview, tax textview, and total textview
      --------------------------------------------------------------------------------------------------------------------*/
     public void UpdateTotal(){
-        double subtotal= SubBoxHelper.getsInstance(getContext()).getSubtotal();
+        double subtotal=
+                SubBoxHelper.getsInstance(getContext()).getSubtotal(
+                SubBoxHelper.getsInstance(getContext()).getCheckoutList());
         double tax = subtotal*0.0875d;
         double total = subtotal+tax;
 
@@ -128,6 +130,7 @@ public class CheckOutFragment extends Fragment
 
     @Override
     public void onCheckOutItemSelected(int id) {
+        //If it is two pane, start fragment instead of a new activity
         if (mIsTwoPane){
             DetailFragment fragment = DetailFragment.newInstance(id);
             getFragmentManager().beginTransaction().replace(R.id.detail_or_checkout_container,fragment).addToBackStack(null).commit();

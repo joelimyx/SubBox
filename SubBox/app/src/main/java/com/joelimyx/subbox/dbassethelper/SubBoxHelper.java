@@ -21,7 +21,7 @@ import java.util.List;
 public class SubBoxHelper extends SQLiteOpenHelper {
     private static SubBoxHelper sInstance;
     private static final String DATABASE_NAME = "subbox.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     private static final String ITEM_TABLE_NAME = "item_table";
     private static final String COL_ID = "id";
@@ -58,6 +58,15 @@ public class SubBoxHelper extends SQLiteOpenHelper {
             COL_DATE+" REAL, "+
             COL_SUBTOTAL +" REAL )";
 
+    private static final String TRANSACTION_TABLE_NAME = "transaction_table";
+    private static final String COL_HISTORY_ID = "history_id";
+    private static final String CREATE_TRANSACTION_TABLE =
+            "CREATE TABLE "+ TRANSACTION_TABLE_NAME +" ( "+
+                    COL_ID+ " INTEGER PRIMARY KEY, "+
+                    COL_ITEM_ID+ " INTEGER, "+
+                    COL_HISTORY_ID+" INTEGER, "+
+                    COL_COUNT+ " INTEGER )";
+
     private SubBoxHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -74,6 +83,7 @@ public class SubBoxHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_ITEM_TABLE);
         db.execSQL(CREATE_CHECKOUT_TABLE);
         db.execSQL(CREATE_HISTORY_TABLE);
+        db.execSQL(CREATE_TRANSACTION_TABLE);
     }
 
     @Override
@@ -81,6 +91,7 @@ public class SubBoxHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS "+ITEM_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS "+ CHECKOUT_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS "+HISTORY_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS "+TRANSACTION_TABLE_NAME);
         this.onCreate(db);
     }
 
@@ -318,8 +329,7 @@ public class SubBoxHelper extends SQLiteOpenHelper {
         return list;
     }
 
-    public double getSubtotal(){
-        List<CheckOutItem> checkOutItems = getCheckoutList();
+    public double getSubtotal(List<CheckOutItem> checkOutItems){
         double subtotal= 0d;
         for (CheckOutItem item: checkOutItems) {
             subtotal+=item.getSubtotalPrice();
@@ -346,11 +356,34 @@ public class SubBoxHelper extends SQLiteOpenHelper {
 
     public void clearCheckOut(){
         SQLiteDatabase db  = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("date", Calendar.getInstance().getTimeInMillis());
-        values.put("subtotal",getSubtotal());
-        db.insert(HISTORY_TABLE_NAME,null,values);
+        //Insert date and subtotal into history_table
+        ContentValues history = new ContentValues();
+        history.put("date", Calendar.getInstance().getTimeInMillis());
+        history.put("subtotal",getSubtotal(getCheckoutList()));
+        db.insert(HISTORY_TABLE_NAME,null,history);
+
+        //Insert transaction into transaction_table
+        Cursor cursor = db.query(HISTORY_TABLE_NAME,
+                new String[]{COL_ID},
+                null,null,null,null,
+                COL_ID+" DESC ",
+                "1");
+        int lastTransaction = 1;
+        if(cursor.moveToFirst()) {
+            lastTransaction = cursor.getInt(cursor.getColumnIndex(COL_ID));
+        }
+        List<CheckOutItem> checkOutItems = getCheckoutList();
+
+        for (CheckOutItem item : checkOutItems) {
+            ContentValues transaction = new ContentValues();
+            transaction.put("history_id",lastTransaction);
+            transaction.put("item_id", item.getItemId());
+            transaction.put("count", item.getCount());
+            db.insert(TRANSACTION_TABLE_NAME,null,transaction);
+        }
+
         db.delete(CHECKOUT_TABLE_NAME,null,null);
+        cursor.close();
         db.close();
     }
 
@@ -368,6 +401,51 @@ public class SubBoxHelper extends SQLiteOpenHelper {
                 list.add(new HistoryItem(cursor.getInt(cursor.getColumnIndex(COL_ID)),
                         cursor.getLong(cursor.getColumnIndex(COL_DATE)),
                         cursor.getLong(cursor.getColumnIndex(COL_SUBTOTAL))
+                ));
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        return list;
+    }
+
+    //--------------------------------------------------------------------------------------------------------------------
+    //Detail Transaction AREA
+    //--------------------------------------------------------------------------------------------------------------------
+    public long getTransactionDate(int id){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(HISTORY_TABLE_NAME,
+                new String[]{COL_DATE},
+                COL_ID+" = ?",
+                new String[]{String.valueOf(id)},
+                null,null,null,null);
+        cursor.moveToFirst();
+        long date = cursor.getLong(cursor.getColumnIndex(COL_DATE));
+        cursor.close();
+        return date;
+    }
+
+    public List<CheckOutItem> getTransactionDetail(int id){
+
+        SQLiteDatabase db = getReadableDatabase();
+
+        //Joining transaction_table with item_table
+        Cursor cursor = db.rawQuery(
+                "SELECT "+TRANSACTION_TABLE_NAME+"."+COL_ITEM_ID+", "+COL_NAME+", "+COL_PRICE+", "+TRANSACTION_TABLE_NAME+"."+COL_COUNT+", "+COL_IMG_URL+
+                        " FROM "+TRANSACTION_TABLE_NAME+" JOIN "+ ITEM_TABLE_NAME +
+                        " WHERE "+TRANSACTION_TABLE_NAME+"."+COL_HISTORY_ID+ " = "+ id+
+                        " AND "+TRANSACTION_TABLE_NAME+"."+COL_ITEM_ID+
+                        " = "+ITEM_TABLE_NAME+"."+COL_ID,null);
+
+        //Reusing checkout class since they serve the same function
+        List<CheckOutItem> list = new ArrayList<>();
+        if (cursor.moveToFirst()){
+            while (!cursor.isAfterLast()){
+                list.add(new CheckOutItem(cursor.getInt(cursor.getColumnIndex(COL_ITEM_ID)),
+                        cursor.getString(cursor.getColumnIndex(COL_NAME)),
+                        cursor.getInt(cursor.getColumnIndex(COL_COUNT)),
+                        cursor.getDouble(cursor.getColumnIndex(COL_PRICE)),
+                        cursor.getString(cursor.getColumnIndex(COL_IMG_URL))
                 ));
                 cursor.moveToNext();
             }

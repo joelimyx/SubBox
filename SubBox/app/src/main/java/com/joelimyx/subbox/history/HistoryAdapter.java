@@ -26,9 +26,15 @@ import butterknife.ButterKnife;
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder> {
 
     private List<HistoryItem> mHistoryItems;
+    private OnHistoryItemSelectedListener mListener;
 
-    public HistoryAdapter(List<HistoryItem> historyItems) {
+    interface OnHistoryItemSelectedListener{
+        void onHistoryItemSelected(int id);
+    }
+
+    public HistoryAdapter(List<HistoryItem> historyItems, OnHistoryItemSelectedListener listener) {
         mHistoryItems = historyItems;
+        mListener = listener;
     }
 
     @Override
@@ -39,7 +45,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     }
 
     @Override
-    public void onBindViewHolder(HistoryViewHolder holder, int position) {
+    public void onBindViewHolder(HistoryViewHolder holder, final int position) {
         DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.getDefault());
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(mHistoryItems.get(position).getDate());
@@ -49,7 +55,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         double total = mHistoryItems.get(position).getSubtotal()*0.875+mHistoryItems.get(position).getSubtotal();
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault());
         holder.mTotalText.setText(currencyFormat.format(total));
-
+        holder.mHistoryCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.onHistoryItemSelected(mHistoryItems.get(position).getId());
+            }
+        });
     }
 
     @Override
@@ -61,7 +72,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         @BindView(R.id.history_cardview) CardView mHistoryCardView;
         @BindView(R.id.history_total_text) TextView mTotalText;
         @BindView(R.id.history_date_text) TextView mHistoryDate;
-        public HistoryViewHolder(View itemView) {
+        private HistoryViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

@@ -107,7 +107,7 @@ public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckO
                     notifyItemChanged(holderPos);
                     mCheckOutItemModifyListener.onCheckOutItemModify();
                     break;
-                //Show detail page when item is selected in checkout
+                //Bring up detail page when item is selected in checkout
                 case R.id.checkout_item:
                     mCheckOutItemSelectedListener.onCheckOutItemSelected(mCheckOutItemList.get(holderPos).getItemId());
                     break;

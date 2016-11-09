@@ -61,6 +61,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.joelimyx.subbox.mainlist.MainActivity"/>
         </activity>
+        <activity
+            android:name=".transactiondetails.TransactionActivity"
+            android:label="@string/title_activity_transaction"
+            android:parentActivityName=".history.HistoryActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.joelimyx.subbox.history.HistoryActivity"/>
+        </activity>
     </application>
 
 </manifest>
