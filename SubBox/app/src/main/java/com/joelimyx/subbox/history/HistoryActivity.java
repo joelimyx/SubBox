@@ -1,28 +1,40 @@
 package com.joelimyx.subbox.history;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 
 import com.joelimyx.subbox.R;
 
-public class HistoryActivity extends AppCompatActivity {
+public class HistoryActivity extends AppCompatActivity{
+    private boolean mIsLandscape;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_history_activity);
+        setContentView(R.layout.activity_history);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("History");
 
-        HistoryFragment fragment = HistoryFragment.newInstance(false);
+        if (findViewById(R.id.is_history_landscape)==null){
+            mIsLandscape = false;
+        }else {
+            mIsLandscape = true;
+        }
+
+        HistoryFragment fragment = HistoryFragment.newInstance(false,-1);
         getSupportFragmentManager().beginTransaction().replace(R.id.history_fragment_container,fragment).commit();
     }
-
+    @Override
+    protected void onResume() {
+        if (mIsLandscape){
+            setResult(RESULT_OK,null);
+            finish();
+        }
+        super.onResume();
+    }
 }

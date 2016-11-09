@@ -27,8 +27,6 @@ public class DetailFragment extends Fragment {
 
     private int mIdSelected;
 
-    //private OnFragmentInteractionListener mListener;
-
     public DetailFragment() {
     }
 
@@ -98,27 +96,4 @@ public class DetailFragment extends Fragment {
             }
         });
     }
-    /**
-     * TO BE CONTINUE
-     */
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnCheckoutItemSelectedListener");
-//        }
-//    }
-//
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        mListener = null;
-//    }
-//
-//    public interface OnFragmentInteractionListener {
-//        void onFragmentInteraction(Uri uri);
-//    }
 }

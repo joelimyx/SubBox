@@ -392,9 +392,11 @@ public class SubBoxHelper extends SQLiteOpenHelper {
     //--------------------------------------------------------------------------------------------------------------------
     public List<HistoryItem> getHistoryList(){
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery(
-                "SELECT "+HISTORY_TABLE_NAME+"."+COL_ID+", "+COL_DATE+", "+ COL_SUBTOTAL +
-                        " FROM "+HISTORY_TABLE_NAME,null);
+        Cursor cursor = db.query(HISTORY_TABLE_NAME,
+                new String[]{COL_ID,COL_DATE,COL_SUBTOTAL},
+                null,null,null,null,
+                COL_ID+" DESC ",
+                null);
         List<HistoryItem> list = new ArrayList<>();
         if (cursor.moveToFirst()){
             while (!cursor.isAfterLast()){

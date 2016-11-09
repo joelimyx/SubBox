@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
@@ -14,6 +15,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,13 +43,14 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnItemSelectedListener{
+public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnItemSelectedListener {
     @BindView(R.id.recyclerview) RecyclerView mRecyclerView;
     FrameLayout container;
     SubBoxAdapter mAdapter;
     private boolean mTwoPane;
     public static final int DETAIL_REQUEST_CODE = 1;
     public static final int CHECKOUT_REQUEST_CODE = 2;
+    public static final int HISTORY_REQUEST_CODE = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,10 +90,21 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
                 if (resultCode == RESULT_OK){
                     CheckOutFragment checkOutFragment = new CheckOutFragment();
                     getSupportFragmentManager().beginTransaction().replace(R.id.detail_or_checkout_container, checkOutFragment).commit();
-
                 }
-            }
-        }
+            }else if(requestCode == HISTORY_REQUEST_CODE){
+                if (resultCode == RESULT_OK){
+                    SharedPreferences preference = getSharedPreferences("intercept id",MODE_PRIVATE);
+                    int id = preference.getInt("id", -1);
+                    if (id==-1){
+                        HistoryFragment historyFragment= new HistoryFragment();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.detail_or_checkout_container, historyFragment).commit();
+                    }else{
+                        HistoryFragment historyFragment= HistoryFragment.newInstance(true,id);
+                        getSupportFragmentManager().beginTransaction().replace(R.id.detail_or_checkout_container, historyFragment).commit();
+                    }//else id
+                }//if result
+            }//if request code
+        }//if two pane
     }
 
     //--------------------------------------------------------------------------------------------------------------------
@@ -195,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
                     getSupportFragmentManager().beginTransaction().replace(R.id.detail_or_checkout_container,historyFragment).commit();
                 }else {
                     Intent intent = new Intent(this, HistoryActivity.class);
-                    startActivity(intent);
+                    startActivityForResult(intent,HISTORY_REQUEST_CODE);
                     overridePendingTransition(R.anim.checkout_scale_in,R.anim.no_animation);
                 }
                 return true;
@@ -242,5 +256,4 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
             overridePendingTransition(R.anim.in_from_right,R.anim.fade_out);
         }
     }
-
 }

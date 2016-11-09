@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,9 @@ import com.joelimyx.subbox.Classes.CheckOutItem;
 import com.joelimyx.subbox.R;
 import com.joelimyx.subbox.dbassethelper.SubBoxHelper;
 
+import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -54,6 +57,7 @@ public class TransactionFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d("Tran Frag", "history id: "+mHistoryItemSelectedId);
         double date = SubBoxHelper.getsInstance(getContext()).getTransactionDate(mHistoryItemSelectedId);
         List<CheckOutItem> transactionList = SubBoxHelper.getsInstance(getContext()).getTransactionDetail(mHistoryItemSelectedId);
 
@@ -64,9 +68,9 @@ public class TransactionFragment extends Fragment {
         recyclerview.setAdapter(adapter);
 
         //Reference to fragment transaction
-        TextView mSubtotalText = (TextView) view.findViewById(R.id.transaction_subtotal_text);
-        TextView mTaxText= (TextView) view.findViewById(R.id.transaction_tax_text);
-        TextView mTotalText = (TextView) view.findViewById(R.id.transaction_total_text);
+        TextView subtotalText = (TextView) view.findViewById(R.id.transaction_subtotal_text);
+        TextView taxText= (TextView) view.findViewById(R.id.transaction_tax_text);
+        TextView totalText = (TextView) view.findViewById(R.id.transaction_total_text);
 
         double subtotal=
                 SubBoxHelper.getsInstance(getContext()).getSubtotal(
@@ -76,8 +80,16 @@ public class TransactionFragment extends Fragment {
 
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault());
 
-        mSubtotalText.setText("Subtotal: "+currencyFormat.format(subtotal));
-        mTaxText.setText("Tax: "+currencyFormat.format(tax));
-        mTotalText.setText("Total: "+currencyFormat.format(total));
+        subtotalText.setText("Subtotal: "+currencyFormat.format(subtotal));
+        taxText.setText("Tax: "+currencyFormat.format(tax));
+        totalText.setText("Total: "+currencyFormat.format(total));
+
+        TextView dateText = (TextView) view.findViewById(R.id.transaction_date_text);
+
+        DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.getDefault());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis((long)date);
+        dateText.setText(
+                formatter.format(calendar.getTime()) );
     }
 }

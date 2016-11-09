@@ -16,23 +16,39 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="95dp"
-        android:background="#003ec2"
+        android:background="#36b300"
         android:padding="16dp"
         android:layout_gravity="bottom">
         <TextView
             android:id="@+id/transaction_subtotal_text"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:textColor="#eee"/>
         <TextView
             android:id="@+id/transaction_tax_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/transaction_subtotal_text"/>
+            android:layout_centerVertical="true"
+            android:textColor="#eee"/>
         <TextView
             android:id="@+id/transaction_total_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/transaction_tax_text"/>
+            android:layout_alignParentBottom="true"
+            android:textColor="#eee"/>
+        <TextView
+            android:id="@+id/transaction_date_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#eee"
+            android:layout_alignParentRight="true"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#eee"
+            android:text="@string/transaction_success"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"/>
     </RelativeLayout>
 
 </FrameLayout>
