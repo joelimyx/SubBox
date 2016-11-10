@@ -1,7 +1,9 @@
 package com.joelimyx.subbox.history;
 
+import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +11,7 @@ import android.widget.TextView;
 
 import com.joelimyx.subbox.Classes.HistoryItem;
 import com.joelimyx.subbox.R;
+import com.joelimyx.subbox.dbassethelper.SubBoxHelper;
 
 import java.text.DateFormat;
 import java.text.NumberFormat;
@@ -27,14 +30,16 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
     private List<HistoryItem> mHistoryItems;
     private OnHistoryItemSelectedListener mListener;
+    Context mContext;
 
     interface OnHistoryItemSelectedListener{
         void onHistoryItemSelected(int id);
     }
 
-    public HistoryAdapter(List<HistoryItem> historyItems, OnHistoryItemSelectedListener listener) {
+    public HistoryAdapter(List<HistoryItem> historyItems, OnHistoryItemSelectedListener listener,Context context) {
         mHistoryItems = historyItems;
         mListener = listener;
+        mContext = context;
     }
 
     @Override
@@ -46,15 +51,23 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
     @Override
     public void onBindViewHolder(HistoryViewHolder holder, final int position) {
+        //Set Date with format depding on the locale
         DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.getDefault());
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(mHistoryItems.get(position).getDate());
         holder.mHistoryDate.setText(
                 formatter.format(calendar.getTime()) );
 
-        double total = mHistoryItems.get(position).getSubtotal()*0.875+mHistoryItems.get(position).getSubtotal();
+        //Set price according to locale
+
+        double subtotal=
+                SubBoxHelper.getsInstance(mContext).getSubtotal(
+                        SubBoxHelper.getsInstance(mContext).getTransactionDetail(
+                                mHistoryItems.get(position).getId()));
+        double total = (subtotal*0.0875d)+subtotal;
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault());
         holder.mTotalText.setText(currencyFormat.format(total));
+
         holder.mHistoryCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

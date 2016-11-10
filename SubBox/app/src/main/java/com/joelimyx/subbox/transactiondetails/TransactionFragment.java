@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +26,7 @@ public class TransactionFragment extends Fragment {
 
     private int mHistoryItemSelectedId;
 
-    public TransactionFragment() {
-        // Required empty public constructor
-    }
+    public TransactionFragment() {}
 
     public static TransactionFragment newInstance(int param1) {
         TransactionFragment fragment = new TransactionFragment();
@@ -57,7 +54,6 @@ public class TransactionFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d("Tran Frag", "history id: "+mHistoryItemSelectedId);
         double date = SubBoxHelper.getsInstance(getContext()).getTransactionDateByID(mHistoryItemSelectedId);
         List<CheckOutItem> transactionList = SubBoxHelper.getsInstance(getContext()).getTransactionDetail(mHistoryItemSelectedId);
 
@@ -71,21 +67,23 @@ public class TransactionFragment extends Fragment {
         TextView subtotalText = (TextView) view.findViewById(R.id.transaction_subtotal_text);
         TextView taxText= (TextView) view.findViewById(R.id.transaction_tax_text);
         TextView totalText = (TextView) view.findViewById(R.id.transaction_total_text);
+        TextView dateText = (TextView) view.findViewById(R.id.transaction_date_text);
 
+        //Calculation
         double subtotal=
                 SubBoxHelper.getsInstance(getContext()).getSubtotal(
                         SubBoxHelper.getsInstance(getContext()).getTransactionDetail(mHistoryItemSelectedId));
         double tax = subtotal*0.0875d;
         double total = subtotal+tax;
 
+        //Format with locale and setText
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault());
 
         subtotalText.setText("Subtotal: "+currencyFormat.format(subtotal));
         taxText.setText("Tax: "+currencyFormat.format(tax));
         totalText.setText("Total: "+currencyFormat.format(total));
 
-        TextView dateText = (TextView) view.findViewById(R.id.transaction_date_text);
-
+        //Date formatter with locale
         DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.getDefault());
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis((long)date);

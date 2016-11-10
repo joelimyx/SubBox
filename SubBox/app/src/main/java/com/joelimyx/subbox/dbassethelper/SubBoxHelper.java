@@ -402,8 +402,7 @@ public class SubBoxHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()){
             while (!cursor.isAfterLast()){
                 list.add(new HistoryItem(cursor.getInt(cursor.getColumnIndex(COL_ID)),
-                        cursor.getLong(cursor.getColumnIndex(COL_DATE)),
-                        cursor.getLong(cursor.getColumnIndex(COL_SUBTOTAL))
+                        cursor.getLong(cursor.getColumnIndex(COL_DATE))
                 ));
                 cursor.moveToNext();
             }

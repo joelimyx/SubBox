@@ -91,7 +91,8 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
                     CheckOutFragment checkOutFragment = new CheckOutFragment();
                     getSupportFragmentManager().beginTransaction().replace(R.id.detail_or_checkout_container, checkOutFragment).commit();
                 }
-            }else if(requestCode == HISTORY_REQUEST_CODE){
+            }//Intercept the transaction selected if from transaction activity when turn to landscape using Sharedpreferences
+            else if(requestCode == HISTORY_REQUEST_CODE){
                 if (resultCode == RESULT_OK){
                     SharedPreferences preference = getSharedPreferences("intercept id",MODE_PRIVATE);
                     int id = preference.getInt("id", -1);

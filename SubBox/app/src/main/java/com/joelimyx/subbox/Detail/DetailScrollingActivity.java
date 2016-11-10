@@ -70,6 +70,7 @@ public class DetailScrollingActivity extends AppCompatActivity {
         return true;
     }
 
+    //Go to checkout activity or fragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){

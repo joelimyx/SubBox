@@ -67,7 +67,7 @@ public class CheckOutFragment extends Fragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        List<CheckOutItem> checkOutItems = SubBoxHelper.getsInstance(getContext()).getCheckoutList();
+        final List<CheckOutItem> checkOutItems = SubBoxHelper.getsInstance(getContext()).getCheckoutList();
 
         //Reference to fragment_check_out
         Button checkOutButton = (Button) view.findViewById(R.id.checkout_button);
@@ -86,19 +86,23 @@ public class CheckOutFragment extends Fragment
         checkOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setMessage("Proceed to Checkout?").setTitle("Checkout").setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
 
-                        //Confirm for checkOut
-                        SubBoxHelper.getsInstance(getContext()).clearCheckOut();
-                        adapter.clearCheckOutList();
-                        UpdateTotal();
-                        Toast.makeText(getContext(), "Thank you for shopping at SubBox!!", Toast.LENGTH_LONG).show();
+                if (checkOutItems.size()>0) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage("Proceed to Checkout?").setTitle("Checkout").setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
 
-                    }
-                }).setNegativeButton("Cancel",null).create().show();
+                            //Confirm for checkOut
+                            SubBoxHelper.getsInstance(getContext()).clearCheckOut();
+                            adapter.clearCheckOutList();
+                            UpdateTotal();
+                            Toast.makeText(getContext(), "Thank you for shopping at SubBox!!", Toast.LENGTH_LONG).show();
+
+
+                        }
+                    }).setNegativeButton("Cancel", null).create().show();
+                }
             }
         });
     }

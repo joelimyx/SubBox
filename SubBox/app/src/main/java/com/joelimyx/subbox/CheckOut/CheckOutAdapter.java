@@ -71,7 +71,7 @@ public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckO
 
         holder.mCountText.setText(String.valueOf(mCheckOutItemList.get(position).getCount()));
 
-        //Add or Minus Checkout item Count
+        //OnClickListener
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -113,7 +113,7 @@ public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckO
                 }
 
             }
-        };
+        };//End of Onclick
 
         holder.mRedMinus.setOnClickListener(listener);
         holder.mGreenPlus.setOnClickListener(listener);

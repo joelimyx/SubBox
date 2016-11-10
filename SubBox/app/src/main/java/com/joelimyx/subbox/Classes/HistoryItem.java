@@ -7,12 +7,10 @@ package com.joelimyx.subbox.Classes;
 public class HistoryItem {
     private int mId;
     private long mDate;
-    private double mSubtotal;
 
-    public HistoryItem(int id, long date, double subtotal) {
+    public HistoryItem(int id, long date) {
         mId = id;
         mDate = date;
-        mSubtotal = subtotal;
     }
 
     public int getId() {
@@ -23,7 +21,4 @@ public class HistoryItem {
         return mDate;
     }
 
-    public double getSubtotal() {
-        return mSubtotal;
-    }
 }

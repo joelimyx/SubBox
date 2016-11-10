@@ -38,6 +38,7 @@ public class TransactionActivity extends AppCompatActivity {
     }
     @Override
     protected void onResume() {
+        //Passed this data to mainactivity to pass it to history fragment to form a chain
         if (mIsLandscape){
             SharedPreferences sharepreference = getSharedPreferences("intercept id", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharepreference.edit();

@@ -39,8 +39,12 @@ public class CheckOutItem {
         return mImgUrl;
     }
 
-    public void addOrMinusCount(char operation){
-        switch (operation){
+    /**
+     * Add or minus the count of checkout count
+     * @param operator -> plus or minus
+     */
+    public void addOrMinusCount(char operator){
+        switch (operator){
             case '-':
                 mCount--;
                 break;
