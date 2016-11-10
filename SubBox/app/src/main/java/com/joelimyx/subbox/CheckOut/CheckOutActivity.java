@@ -42,6 +42,7 @@ public class CheckOutActivity extends AppCompatActivity{
         super.onResume();
     }
 
+    //Go home when the up button is pressed and create an animation
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {

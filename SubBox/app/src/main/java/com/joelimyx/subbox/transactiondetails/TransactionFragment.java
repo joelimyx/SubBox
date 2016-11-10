@@ -58,7 +58,7 @@ public class TransactionFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d("Tran Frag", "history id: "+mHistoryItemSelectedId);
-        double date = SubBoxHelper.getsInstance(getContext()).getTransactionDate(mHistoryItemSelectedId);
+        double date = SubBoxHelper.getsInstance(getContext()).getTransactionDateByID(mHistoryItemSelectedId);
         List<CheckOutItem> transactionList = SubBoxHelper.getsInstance(getContext()).getTransactionDetail(mHistoryItemSelectedId);
 
         //Recycler View

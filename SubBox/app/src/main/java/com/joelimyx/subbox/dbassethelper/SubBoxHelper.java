@@ -95,9 +95,9 @@ public class SubBoxHelper extends SQLiteOpenHelper {
         this.onCreate(db);
     }
 
-    /*----------------------------------------------------------
-    MAIN LIST AREA
-     ----------------------------------------------------------*/
+    //--------------------------------------------------------------------------------------------------------------------
+    //Main Activity AREA
+    //--------------------------------------------------------------------------------------------------------------------
     public List<SubBox> getSubBoxList(){
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(
@@ -238,9 +238,9 @@ public class SubBoxHelper extends SQLiteOpenHelper {
         return sb.toString();
     }
 
-    /*----------------------------------------------------------
-    DETAIL AREA
-     ----------------------------------------------------------*/
+    //--------------------------------------------------------------------------------------------------------------------
+    //Detail AREA
+    //--------------------------------------------------------------------------------------------------------------------
     public SubBox getSubBoxByID(int id){
 
         SQLiteDatabase db = getReadableDatabase();
@@ -356,6 +356,7 @@ public class SubBoxHelper extends SQLiteOpenHelper {
 
     public void clearCheckOut(){
         SQLiteDatabase db  = getWritableDatabase();
+
         //Insert date and subtotal into history_table
         ContentValues history = new ContentValues();
         history.put("date", Calendar.getInstance().getTimeInMillis());
@@ -414,7 +415,7 @@ public class SubBoxHelper extends SQLiteOpenHelper {
     //--------------------------------------------------------------------------------------------------------------------
     //Detail Transaction AREA
     //--------------------------------------------------------------------------------------------------------------------
-    public long getTransactionDate(int id){
+    public long getTransactionDateByID(int id){
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(HISTORY_TABLE_NAME,
                 new String[]{COL_DATE},

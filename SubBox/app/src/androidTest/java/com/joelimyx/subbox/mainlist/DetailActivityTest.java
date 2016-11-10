@@ -35,72 +35,44 @@ public class DetailActivityTest {
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void detailActivityTest() {
-        ViewInteraction recyclerView = onView(
-                allOf(withId(R.id.recyclerview), isDisplayed()));
-        recyclerView.perform(actionOnItemAtPosition(1, click()));
+    public void detailAddToCartTest() {
+        onView(allOf(withId(R.id.recyclerview), isDisplayed()))
+                .perform(actionOnItemAtPosition(1, click()));
 
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.title_text), withText("Dollar Shaving Club"),
-                        isDisplayed()));
-        textView.check(matches(withText("Dollar Shaving Club")));
+        onView(allOf(withId(R.id.title_text), withText("Dollar Shaving Club"), isDisplayed()))
+                .check(matches(withText("Dollar Shaving Club")));
 
-        ViewInteraction imageView = onView(
-                allOf(withId(R.id.detail_image),
-                        isDisplayed()));
-        imageView.check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.detail_image), isDisplayed()))
+                .check(matches(isDisplayed()));
 
-        ViewInteraction textView2 = onView(
-                allOf(withId(R.id.detail_price_text), withText("$7.99"),
-                        isDisplayed()));
-        textView2.check(matches(withText("$7.99")));
+        onView(allOf(withId(R.id.detail_price_text), withText("$7.99"), isDisplayed()))
+                .check(matches(withText("$7.99")));
 
-        ViewInteraction textView3 = onView(
-                allOf(withId(R.id.detail_price_text), withText("$7.99"),
-                        isDisplayed()));
-        textView3.check(matches(withText("$7.99")));
+        onView(allOf(withId(R.id.detail_price_text), withText("$7.99"), isDisplayed()))
+                .check(matches(withText("$7.99")));
 
-        ViewInteraction button = onView(
-                allOf(withId(R.id.detail_button),
-                        isDisplayed()));
-        button.check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.detail_button), isDisplayed()))
+                .check(matches(isDisplayed()));
 
-        ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.detail_button), withText("Add to cart"), isDisplayed()));
-        appCompatButton.perform(click());
+        onView(allOf(withId(R.id.detail_button), withText("Add to cart"), isDisplayed()))
+                .perform(click());
 
-        ViewInteraction button2 = onView(
-                allOf(withId(R.id.detail_button),
-                        isDisplayed()));
-        button2.check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.detail_button), withText("In Cart"), isDisplayed()));
 
-        ViewInteraction actionMenuItemView = onView(
-                allOf(withId(R.id.cart), withContentDescription("Go to cart"), isDisplayed()));
-        actionMenuItemView.perform(click());
+        onView(allOf(withId(R.id.cart), withContentDescription("Go to cart"), isDisplayed()))
+                .perform(click());
 
-        ViewInteraction relativeLayout2 = onView(
-                        isDisplayed());
-        relativeLayout2.check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.checkout_title_text), withText("Dollar Shaving Club"), isDisplayed()))
+                .check(matches(withText("Dollar Shaving Club")));
 
-        ViewInteraction textView4 = onView(
-                allOf(withId(R.id.checkout_title_text), withText("Dollar Shaving Club"),
-                        isDisplayed()));
-        textView4.check(matches(withText("Dollar Shaving Club")));
+        onView(allOf(withId(R.id.checkout_price_text), withText("$7.99"), isDisplayed()))
+                .check(matches(withText("$7.99")));
 
-        ViewInteraction textView5 = onView(
-                allOf(withId(R.id.checkout_price_text), withText("$7.99"),
-                        isDisplayed()));
-        textView5.check(matches(withText("$7.99")));
+        onView(allOf(withId(R.id.checkout_count_text), withText("1"), isDisplayed() ))
+                .check(matches(withText("1")));
 
-        ViewInteraction textView6 = onView(
-                allOf(withId(R.id.checkout_count_text), withText("1"),
-                        isDisplayed()));
-        textView6.check(matches(withText("1")));
-
-        ViewInteraction textView7 = onView(
-                allOf(withId(R.id.checkout_count_text), withText("1"),
-                        isDisplayed()));
-        textView7.check(matches(withText("1")));
+        onView(allOf(withId(R.id.checkout_count_text), withText("1"), isDisplayed() ))
+                .check(matches(withText("1")));
 
     }
 

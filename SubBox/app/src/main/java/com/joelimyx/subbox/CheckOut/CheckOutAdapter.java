@@ -29,8 +29,8 @@ import butterknife.ButterKnife;
 public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckOutViewHolder> {
 
     private List<CheckOutItem> mCheckOutItemList;
-    private OnCheckOutItemModifyListener mCheckOutItemModifyListener;
     private Context mContext;
+    private OnCheckOutItemModifyListener mCheckOutItemModifyListener;
     private OnCheckOutItemSelectedListener mCheckOutItemSelectedListener;
 
     //Interface for notifying CheckOutFragment to update total
@@ -87,16 +87,14 @@ public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckO
                         SubBoxHelper.getsInstance(view.getContext())
                                 .modifyCheckOutItemCount(0,item.getItemId());
                         notifyItemRemoved(holderPos);
-                        mCheckOutItemModifyListener.onCheckOutItemModify();
-
                     }else{
                         //Else minus one count
                         SubBoxHelper.getsInstance(view.getContext())
                                 .modifyCheckOutItemCount(item.getCount()-1,item.getItemId());
                         mCheckOutItemList.get(holderPos).addOrMinusCount('-');
                         notifyItemChanged(holderPos);
-                        mCheckOutItemModifyListener.onCheckOutItemModify();
                     }
+                    mCheckOutItemModifyListener.onCheckOutItemModify();
                     break;
 
                 //Increase count by one
@@ -107,6 +105,7 @@ public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckO
                     notifyItemChanged(holderPos);
                     mCheckOutItemModifyListener.onCheckOutItemModify();
                     break;
+
                 //Bring up detail page when item is selected in checkout
                 case R.id.checkout_item:
                     mCheckOutItemSelectedListener.onCheckOutItemSelected(mCheckOutItemList.get(holderPos).getItemId());
@@ -141,7 +140,7 @@ public class CheckOutAdapter extends RecyclerView.Adapter<CheckOutAdapter.CheckO
         @BindView(R.id.red_minus) ImageView mRedMinus;
         @BindView(R.id.green_plus) ImageView mGreenPlus;
 
-        public CheckOutViewHolder(View itemView) {
+        private CheckOutViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
         }

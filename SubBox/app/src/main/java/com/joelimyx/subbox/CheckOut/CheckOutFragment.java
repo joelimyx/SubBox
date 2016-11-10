@@ -130,7 +130,8 @@ public class CheckOutFragment extends Fragment
 
     @Override
     public void onCheckOutItemSelected(int id) {
-        //If it is two pane, start fragment instead of a new activity
+
+        //If it is two pane, start fragment instead of a new activity of detail view of the item selected
         if (mIsTwoPane){
             DetailFragment fragment = DetailFragment.newInstance(id);
             getFragmentManager().beginTransaction().replace(R.id.detail_or_checkout_container,fragment).addToBackStack(null).commit();
