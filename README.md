@@ -91,7 +91,6 @@ With our hectic life, it can be difficult to make time and discover new ingredie
 - When the user click on the item in in checkout, the app will bring up a detail page of the item the click on
 	- When I click on the item in checkout, the app show up the detail of the item. 
 
----
 ##Prototype
 <p align="center">
 <img src="Prototype/IMG_20161110_152428.jpg" height="300px"/>
@@ -99,7 +98,6 @@ With our hectic life, it can be difficult to make time and discover new ingredie
 <img src="Prototype/IMG_20161110_152442.jpg" height="300px"/>
 </p>
 
----
 ##ScreenShots
 ###SmartPhone
 <p align="center">
