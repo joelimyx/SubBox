@@ -92,14 +92,24 @@ With our hectic life, it can be difficult to make time and discover new ingredie
 	- When I click on the item in checkout, the app show up the detail of the item. 
 
 ---
-#ScreenShots
-##SmartPhone
+##Prototype
+
+---
+##ScreenShots
+###SmartPhone
 <p align="center">
-  <img src="screenshots/Screenshot_20161110-144302.png" height="300px"/> <img src="screenshots/Screenshot_20161110-144315.png" height="300px"/> <img src="screenshots/Screenshot_20161110-144416.png" height="300px"/>  <img src="screenshots/Screenshot_20161110-144411.png" height="300px"/> <img src="screenshots/Screenshot_20161110-144424.png" height="300px"/>  <img src="screenshots/Screenshot_20161110-144436.png" height="300px"/>  <img src="screenshots/Screenshot_20161110-144443.png" height="300px"/>  
-  <img src="screenshots/Screenshot_20161110-144446.png" height="300px"/>  
+  <img src="screenshots/Screenshot_20161110-144302.png" height="300px"/> 
+  <img src="screenshots/Screenshot_20161110-144315.png" height="300px"/> 
+  <img src="screenshots/Screenshot_20161110-144416.png" height="300px"/>  
+  <img src="screenshots/Screenshot_20161110-144411.png" height="300px"/> 
+  <img src="screenshots/Screenshot_20161110-144424.png" height="300px"/>  
+  <img src="screenshots/Screenshot_20161110-144433.png" height="300px"/>  
+  <img src="screenshots/Screenshot_20161110-144436.png" height="300px"/>  
+  <img src="screenshots/Screenshot_20161110-144443.png" height="300px"/>  
+  <img src="screenshots/Screenshot_20161110-144446.png" height="300px"/>
 </p>
   
-##Tablet
+###Tablet
 <p align = "center">
 <img src="screenshots/Screenshot_1478807197.png" height="300px"/>  <img src="screenshots/Screenshot_1478807205.png" height="300px"/> <img src="screenshots/Screenshot_1478807212.png" height="300px"/> <img src="screenshots/Screenshot_1478807216.png" height="300px"/> 
 </p>
