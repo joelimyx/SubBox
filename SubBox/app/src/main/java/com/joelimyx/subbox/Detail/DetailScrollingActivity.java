@@ -19,7 +19,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DetailScrollingActivity extends AppCompatActivity {
-    @BindView(R.id.detail_toolbar) Toolbar mToolbar;
     @BindView(R.id.toolbar_image) ImageView mToolbarImage;
     private boolean mIsLandScape;
 
@@ -38,8 +37,9 @@ public class DetailScrollingActivity extends AppCompatActivity {
         }
 
         //Toolbar
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
         Picasso.with(this)
                 .load(SubBoxHelper.getsInstance(this).getSubBoxByID(id).getImgUrl())
@@ -77,6 +77,10 @@ public class DetailScrollingActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(),CheckOutActivity.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.checkout_scale_in,R.anim.no_animation);
+                return true;
+            case android.R.id.home:
+                finish();
+                overridePendingTransition(R.anim.pop_in,R.anim.out_to_right);
                 return true;
         }
         return true;

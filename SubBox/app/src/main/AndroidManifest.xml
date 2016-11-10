@@ -25,12 +25,10 @@
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable"/>
-
             <intent-filter>
-
                 <!-- End of search enabler -->
-                <action android:name="android.intent.action.MAIN"/>
 
+                <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -43,6 +41,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.joelimyx.subbox.mainlist.MainActivity"/>
         </activity>
+
         <activity
             android:name=".detail.DetailScrollingActivity"
             android:label="@string/title_activity_detail_scrolling"
@@ -52,6 +51,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.joelimyx.subbox.mainlist.MainActivity"/>
         </activity>
+
         <activity
             android:name=".history.HistoryActivity"
             android:label="@string/title_activity_history_activity"
@@ -61,6 +61,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.joelimyx.subbox.mainlist.MainActivity"/>
         </activity>
+
         <activity
             android:name=".transactiondetails.TransactionActivity"
             android:label="@string/title_activity_transaction"

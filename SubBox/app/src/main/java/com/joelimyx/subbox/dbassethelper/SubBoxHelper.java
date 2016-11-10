@@ -150,15 +150,15 @@ public class SubBoxHelper extends SQLiteOpenHelper {
 
     /**
      * @param query = search query
-     * @return List of SubBoxes that matches the query with subBox name
+     * @return List of SubBoxes that matches the query with subBox name or type
      */
     public List<SubBox> getSearchList(String query){
         SQLiteDatabase db  = getReadableDatabase();
         Cursor cursor = db.query(
                 ITEM_TABLE_NAME,
                 COL_ITEMS_SELECTION,
-                COL_NAME+" LIKE ? ",
-                new String[]{"%"+query+"%"},
+                COL_NAME+" LIKE ? OR "+COL_TYPE+" LIKE ?",
+                new String[]{"%"+query+"%","%"+query+"%"},
                 null,null,null,null);
         List<SubBox> list = new ArrayList<>();
         if (cursor.moveToFirst()){
@@ -225,7 +225,7 @@ public class SubBoxHelper extends SQLiteOpenHelper {
      * @param length = length of the array
      * @return place holder for IN OPERATOR
      */
-    private String createPlaceHolderForQuery(int length){
+    public String createPlaceHolderForQuery(int length){
         if (length<=0){
             return "";
         }
