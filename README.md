@@ -1,112 +1,82 @@
-# ![](https://ga-dash.s3.amazonaws.com/production/assets/logo-9f88ae6c9c3871690e33280fcf557f33.png) Project #2: Mobile Commerce App
+# SubBox: An app for subscription addict 
 
 ## Overview
 
-Project 2 will really test your new skills, bringing weeks of knowledge together to create an app that integrates many different technologies and principles. This app will allow a user to search and buy products from your digital store!
-
-**You will be working individually for this project**. The project will be spread across **two weeks**, with separate deliverables due at the end of each week. Although the deliverables will be separate, we will be incorporating them all into a single app, expanding upon the previous week's work.
-
-Be creative! You can do whatever you want, as long as it meets the project requirements and the [student code of conduct](../code-of-conduct.md).
-
-Also, for this project, you will be providing mock data (i.e. you will not be connecting to the internet to download data). However, to make your lives easier, you are allowed to use the [Picasso photo library](http://square.github.io/picasso/) if you want to load images from the web.
-
-## Requirements
-
-Required app features:
-- View a list of products
-- Narrow down the list of products by entering search terms
-- Click on a product and go to a screen with more detail on that item
-- Add and remove products from a shopping cart
-- Shopping cart must maintain its state as long as the app is open (i.e. items won't disappear if you navigate to another screen and come back to the cart later)
-- "Checking out" will clear the shopping cart and give the user some sort of message indicating the "purchase" was successful (no need to actually process financial transactions!)
-
-Implementation requirements:
-- Write a custom class (or classes) to represent your products. For example:
-  - A bookstore app would need a `Book` class that with fields for _title_, _author_, _ISBN_, _price_, etc.
-  - A music store app would need a `Song` class with fields for _artist_, _album_, _title_, _price_, etc.
-- Use a **SQLite database** to persist all the products available within your app
-  - Query your database to retrieve products to display
-- Display your list of products in a `RecyclerView`
-- Enable search to narrow down the list of products displayed
-  - Allow user to search by **at least 2 different product-related criteria**, such as name, price, availability, size, description, etc.
-  - Accept input via `SearchView` or optionally a [Search Dialog](https://developer.android.com/guide/topics/search/search-dialog.html)
-- Show additional product detail on a separate screen when a user clicks an item
-  - Can use fragments or a separate activity
-  - Must include an `ImageView`, which can be populated with an actual product image or just filled with a solid background color to use as a placeholder
-- Persist the state of the shopping cart while the app is open by whatever means you prefer
-- Include automated testing
-  - Create **Espresso tests** for each screen of your app
-  - Write **unit tests** for any non-Android classes you create (no need to unit test simple getter/setter methods)
-- Choose good, descriptive names for classes/variables/methods, and write **comments** explaining the functionality of your code
-
-Additional requirements:
-- Provide **user story** documentation
-  - List all features of your app
-  - For each feature, list the conditions that must be true for the feature to be successfully implemented
-  - Write a user story for each condition
-  - Indicate whether each user story is covered by an Espresso test, a unit test, or if it requires manual testing - if the latter, briefly indicate how to perform the manual test
-- Include photos of your **paper prototypes**, or optionally a link to your [POP App](https://popapp.in/) prototype
-- Write a **README.md** file describing how your app works and any bugs you are aware of
-  - Use the [markdown format](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) for this file
-  - Embed at least one [screenshot](https://developer.android.com/studio/debug/am-screenshot.html) of your app
-
-**Bonus:**
-- Incorporate Material Design principles into your app
-- Create a review system for user feedback for each product
-- Add more complexity to the user's searches (possibly allowing more than one search criteria at a time)
-- Incorporate images from the internet using [Picasso](http://square.github.io/picasso/) or [Glide](https://github.com/bumptech/glide)
-- Implement **Master/Detail Flow** with side-by-side list and detail panes on large (i.e. landscape tablet) screens
-- Allow user to filter (i.e. by product category) in addition to search
-- Persist shopping cart even when app is closed if user didn't "check out" before quitting
-
-## Necessary Deliverables
-
-- A final, working version of your app with a polished UI - be creative!
-- Your readme.md file
-- Your user stories document (or a link to a google spreadsheet if you prefer - make sure to set sharing settings correctly!)
-- Images of or link to your paper prototypes
-- A pull request from your fork back to the original repo, including frequent commits dating back to the **very beginning** of the project - commit early, commit often!
-
-## Suggested Timeline
-
-**Week 5:**
-- Define your features and write conditions and user stories
-- Create paper prototypes - get input from other people on your prototypes!
-- Write your non-Android classes to model the products for your app and unit tests as needed
-- Plan out your database - exactly what table(s) and columns you'll need
-- Write your `SQLiteOpenHelper` class to create your table(s) and add your data
-
-**Week 6:**
-- List out all the Android-specific classes you'll need (activities, fragments, adapters, view holders, etc.) and sketch out notes or diagrams about how they'll all interact
-- Implement the UI and navigation of your app
-- Use the database to populate each screen of your app with the correct data
-- Make sure each feature works properly _before_ working on other features!
-- Create your espresso tests
-- Set aside time to write your readme, update your user stories to describe how each is tested, take screenshots, etc. - don't lose points by missing these relatively easy requirements!
-
-## Code of Conduct
-
-As always, your app must adhere to General Assembly's [student code of conduct guidelines](https://github.com/ga-adi-macaron/Course-Materials/blob/master/markdown/code-of-conduct.md).
-If you have questions about whether or not your work adheres to these guidelines, please speak with a member of your instructional team.
-
-## Example Deliverable
-
-Below you can find an example of what the instructors' final product looks like. **Be creative with your own designs!**
-
-<p align="center">
-  <img src="screenshots/example-1.png" height="300px" /> <img src="screenshots/example-2.png" height="300px" />
-</p>
-
-## Additional Resources
-
-- [Android API Reference](http://developer.android.com/reference/packages.html)
-- [Android API Guides](http://developer.android.com/guide/index.html)
-- [Using SQLite in Android](http://developer.android.com/guide/topics/data/data-storage.html#db)
-- [Material Design details](http://www.google.com/design/spec/material-design/introduction.html#)
-- [Code and Layout Templates](https://developer.android.com/studio/projects/templates.html)
+With our hectic life, it can be difficult to make time and discover new ingredients or products. This is why SubBox is here to help. With clean and simple interface, SubBox is designed to easily navigate a huge variety of subscription boxes that are available in the market. Have fun using it.
 
 ---
+## Features
 
-## Licensing
-1. All content is licensed under a CC­BY­NC­SA 4.0 license.
-2. All software code is licensed under GNU GPLv3. For commercial use or alternative licensing, please contact [legal@ga.co](mailto:legal@ga.co).
+---
+###Main Page
+####Online Image
+- The user can scroll thru the list of items faster once the images from internet have been cache into the phone.
+	- As a user, I can scroll thru the list of items when all the images have been loaded.
+####Sort by price
+- The user can sort items by price from low to high.
+	- I can press the "sort by price" button to sort the list by price from low to high.
+####search by name or type
+- The user can search by item name or type.
+	- I can press the search button, input the search term and the item will show up that matches the search term.
+####search suggestion
+- The user can see search suggestion when they press on the search icon.
+	- I can see a list show up when the search button is pressed.
+####voice search
+- The user can use voice search if they prefer.
+	- I can see the microphone icon when I press the search icon. Upon pressing it, I can speak the term I want to search.
+####filter list
+- The user can filter item with multiple category of item type.
+	- When I click on the "Filter by", I am prompted with a list of categories to filter.
+
+---
+###Detail Page
+####show detail
+- The user can click on the item in the main list to show details in other pane
+	- When I click on the item, I can see detail info of the item in separate frame.
+####Collapse detail toolbar
+- When user scroll up, they can see the image in toolbar collapse, in turns providing more space for the details. 
+	- When I scroll up for more details in the page, the image in the toolbar collapses so I have more screen space to view the details.
+####add to cart
+- The user can add the item to cart from the details and indicate it is added with a toast and text change.
+	- When I pressed the button, "Add to cart", a message shows up saying it is added to cart.
+
+---
+###Checkout Page
+####add or minus count 
+- The user can increase or decrease the count of the item in checkout page
+	- When I press the plus or minus icon, the count goes up and down accordingly.
+- If the count is zero, it is automatically removed.
+	- When the count reached zero, I can see the item being automatically removed from checkout page.
+####show total price in real time
+- The subtotal, tax and total price is being updated in real time when user increase or decrease item count.
+	- I can see the prices being updated in real time as I add or decrease the count.
+####checkout clear
+- The user can clear the checkout with a click of a button. 
+	- When I clicked on the checkout button, I can see the items in my shopping cart being cleared out.
+
+---
+##Bonus
+####locale
+- The user can use their default locale to display the price and date that match their locale. 
+	- I can see the currency and date that matches my locale.
+####History
+- After the user checkout they can see their order history with total amount and transaction date.
+	- When I clicked on the history icon, I can see the list of order ordered by the most recent.
+#### Transaction Detail
+- The user can see the detail of the transaction when they click on the transaction, including time and price.
+	- I can see the detail of the transaction when I clicked on it, including the individual item, total and the date. 
+####Master Detail Flow
+- The user can see a list and detail page when they are using a tablet in landscape mode
+	- I can see the detail page, checkout, history and transaction details when I'm using a tablet in a landscape mode.
+####Detail Title Marquee
+- If the title gets too long in title in detail page, it will autoscroll horizontally so the user can see the full name
+	- I can see the text scrolling sideway when it is too long or my screen size is too small.
+####Detail, checkout and transaction persistence
+- When the user rotate from portrait to landscape, the app keeps the page that they are currently viewing and display it the detail pane.
+	- When I rotate from portrait to landscape, I can still see the page I was in on the right side of the app. 
+####checkout to detail
+- When the user click on the item in in checkout, the app will bring up a detail page of the item the click on
+	- When I click on the item in checkout, the app show up the detail of the item. 
+
+---
+#ScreenShots
