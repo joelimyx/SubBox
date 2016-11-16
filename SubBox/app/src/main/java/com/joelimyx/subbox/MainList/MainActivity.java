@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
@@ -22,7 +23,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.joelimyx.subbox.Classes.CheckOutItem;
+import com.joelimyx.subbox.Classes.HistoryItem;
 import com.joelimyx.subbox.checkout.CheckOutActivity;
 import com.joelimyx.subbox.checkout.CheckOutFragment;
 import com.joelimyx.subbox.Classes.SubBox;
@@ -37,20 +42,26 @@ import com.joelimyx.subbox.history.HistoryFragment;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnItemSelectedListener {
     @BindView(R.id.recyclerview) RecyclerView mRecyclerView;
+    @BindView(R.id.progressbar) ProgressBar mProgressBar;
+    ArrayAdapterSearchView mArrayAdapterSearchView;
+    ArrayAdapter<String> mArrayAdapter;
     FrameLayout container;
     SubBoxAdapter mAdapter;
     private boolean mTwoPane;
     public static final int DETAIL_REQUEST_CODE = 1;
     public static final int CHECKOUT_REQUEST_CODE = 2;
     public static final int HISTORY_REQUEST_CODE = 3;
+    private MainAsyncTask mTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,10 +75,9 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
         DBAssetHelper dbSetup = new DBAssetHelper(MainActivity.this);
         dbSetup.getWritableDatabase();
 
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this,2, LinearLayoutManager.VERTICAL,false));
-
-        mAdapter = new SubBoxAdapter(SubBoxHelper.getsInstance(this).getSubBoxList(),this,this);
-        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this,2, LinearLayoutManager.VERTICAL,false));
+        mTask = new MainAsyncTask();
+        mTask.execute(new Object());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -119,22 +129,14 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 
-        final ArrayAdapterSearchView arrayAdapterSearchView = (ArrayAdapterSearchView) MenuItemCompat.getActionView(menu.findItem(R.id.search));
+        mArrayAdapterSearchView = (ArrayAdapterSearchView) MenuItemCompat.getActionView(menu.findItem(R.id.search));
 
         ComponentName componentName = new ComponentName(this,MainActivity.class);
-        arrayAdapterSearchView.setSearchableInfo(searchManager.getSearchableInfo(componentName));
+        mArrayAdapterSearchView.setSearchableInfo(searchManager.getSearchableInfo(componentName));
 
         //Autocomplete AREA
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,R.layout.custom_autocomplete,
-                SubBoxHelper.getsInstance(this).getTitleList());
-        arrayAdapterSearchView.setAdapter(adapter);
-        arrayAdapterSearchView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                arrayAdapterSearchView.setText(adapter.getItem(i));
-            }
-        });
+        AutoCompleteAsyncTask task = new AutoCompleteAsyncTask();
+        task.execute();
 
         return true;
     }
@@ -151,16 +153,16 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
             //Restore list if back button is pressed in searchview
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                List<SubBox> restore = SubBoxHelper.getsInstance(getApplicationContext()).getSubBoxList();
-                mAdapter.replaceData(restore);
+                mTask = new MainAsyncTask();
+                mTask.execute(new Object());
                 return true;
             }
         });
 
         switch (item.getItemId()){
             case R.id.price_sort:
-                List<SubBox> restore = SubBoxHelper.getsInstance(getApplicationContext()).sortListByPrice();
-                mAdapter.replaceData(restore);
+                mTask = new MainAsyncTask();
+                mTask.execute(new HistoryItem(1,2));
                 return true;
 
             //Menu item for cart to start CheckOut Activity or CheckOut Fragment
@@ -195,9 +197,8 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if (selectedType.size()!=0) {
-                            List<SubBox> filteredList = SubBoxHelper.getsInstance(getApplicationContext()).getFilteredList(selectedType);
-                            mAdapter.replaceData(filteredList);
-                            selectedType.clear();
+                            mTask = new MainAsyncTask();
+                            mTask.execute(selectedType);
                         }
                     }
                 }).setNegativeButton("Cancel", null).create().show();
@@ -232,9 +233,8 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
 
         if(Intent.ACTION_SEARCH.equals(intent.getAction())){
             String query = intent.getStringExtra(SearchManager.QUERY);
-            List<SubBox> searchList = SubBoxHelper.getsInstance(this).getSearchList(query);
-
-            mAdapter.replaceData(searchList);
+            mTask = new MainAsyncTask();
+            mTask.execute(query);
         }
     }
 
@@ -257,4 +257,68 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
             overridePendingTransition(R.anim.in_from_right,R.anim.fade_out);
         }
     }
+
+    //--------------------------------------------------------------------------------------------------------------------
+    //AsyncArea AREA
+    //--------------------------------------------------------------------------------------------------------------------
+    class MainAsyncTask extends AsyncTask<Object,Void,List<SubBox> >{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Toast.makeText(MainActivity.this, "Loading", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected List<SubBox> doInBackground(Object... objects) {
+            if (objects[0] instanceof HistoryItem) {
+                return SubBoxHelper.getsInstance(getApplicationContext()).sortListByPrice();
+            }else if (objects[0] instanceof List) {
+                List<SubBox> temp = SubBoxHelper.getsInstance(getApplicationContext()).getFilteredList((List<String>)objects[0]);
+                ((List<String>)objects[0]).clear();
+                return temp;
+            }else if (objects[0] instanceof String) {
+                return SubBoxHelper.getsInstance(MainActivity.this).getSearchList((String) objects[0]);
+            }else {
+                return SubBoxHelper.getsInstance(MainActivity.this).getSubBoxList();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(List<SubBox> subBoxes) {
+            super.onPostExecute(subBoxes);
+            mAdapter = new SubBoxAdapter(subBoxes,MainActivity.this,MainActivity.this);
+            mAdapter.replaceData(subBoxes);
+            mRecyclerView.setAdapter(mAdapter);
+            Toast.makeText(MainActivity.this, "Done", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    class AutoCompleteAsyncTask extends AsyncTask<Void,Void,ArrayAdapter>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Toast.makeText(MainActivity.this, "Loading", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected ArrayAdapter doInBackground(Void... voids) {
+            return new ArrayAdapter<>(
+                    MainActivity.this,R.layout.custom_autocomplete,
+            SubBoxHelper.getsInstance(MainActivity.this).getTitleList());
+        }
+
+        @Override
+        protected void onPostExecute(ArrayAdapter arrayAdapter) {
+            super.onPostExecute(arrayAdapter);
+            mArrayAdapter = arrayAdapter;
+            mArrayAdapterSearchView.setAdapter(mArrayAdapter);
+            mArrayAdapterSearchView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    mArrayAdapterSearchView.setText(mArrayAdapter.getItem(i));
+                }
+            });
+        }
+    }
+
 }
