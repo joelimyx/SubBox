@@ -1,5 +1,6 @@
 package com.joelimyx.subbox.detail;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -21,10 +22,17 @@ import com.squareup.picasso.Picasso;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 public class DetailFragment extends Fragment {
+    @BindView(R.id.detail_image) ImageView detailImage;
+    @BindView(R.id.title_text) TextView mTitleText;
+    @BindView(R.id.detail_price_text) TextView mPriceText;
+    @BindView(R.id.detail_text) TextView mDetailText;
+    @BindView(R.id.detail_button) Button mDetailButton;
     private static final String ARG_PARAM1 = "param1";
-
     private int mIdSelected;
 
     public DetailFragment() {
@@ -55,45 +63,69 @@ public class DetailFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ButterKnife.bind(this,view);
 
-        SubBox subBox = SubBoxHelper.getsInstance(getContext()).getSubBoxByID(mIdSelected);
-
-        //Reference
-        ImageView detailImage  = (ImageView) view.findViewById(R.id.detail_image);
-        TextView titleText = (TextView) view.findViewById(R.id.title_text);
-        TextView priceText = (TextView) view.findViewById(R.id.detail_price_text);
-        TextView detailText = (TextView) view.findViewById(R.id.detail_text);
-        final Button detailButton = (Button) view.findViewById(R.id.detail_button);
-
-        //Setup title and configure to automatically scroll sideway if too long
-        titleText.setText(subBox.getName());
-        titleText.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-        titleText.setSingleLine(true);
-        titleText.setMarqueeRepeatLimit(10);
-        titleText.setSelected(true);
-
-        Picasso.with(getContext()).load(subBox.getImgUrl()).resize(200,200).centerCrop().into(detailImage);
-
-        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault());
-        double priceValue = subBox.getPrice();
-        priceText.setText(currencyFormat.format(priceValue));
-
-        detailText.setText(subBox.getDescription());
+        DetailFragAsync task = new DetailFragAsync();
+        task.execute(1);
 
         //Change the text to done if it is already in the checkout
-        if (SubBoxHelper.getsInstance(getContext()).isSubBoxInCheckOut(mIdSelected))
-            detailButton.setText(R.string.detail_in_cart);
+        task = new DetailFragAsync();
+        task.execute(2);
 
-        detailButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Add to checkout and change the text to done
-                if(!SubBoxHelper.getsInstance(getContext()).isSubBoxInCheckOut(mIdSelected)){
-                    SubBoxHelper.getsInstance(getContext()).addSubBoxToCheckOut(mIdSelected);
-                    detailButton.setText(R.string.detail_in_cart);
-                    Toast.makeText(getContext(), "Added to cart", Toast.LENGTH_SHORT).show();
-                }
+        task = new DetailFragAsync();
+        task.execute(3);
+
+    }
+    class DetailFragAsync extends AsyncTask<Integer,Void,Object>{
+        @Override
+        protected Object doInBackground(Integer... integers) {
+            switch (integers[0]){
+                case 1:
+                    return SubBoxHelper.getsInstance(getContext()).getSubBoxByID(mIdSelected);
+                case 2:
+                    return SubBoxHelper.getsInstance(getContext()).isSubBoxInCheckOut(mIdSelected);
+                case 3:
+                    if(!SubBoxHelper.getsInstance(getContext()).isSubBoxInCheckOut(mIdSelected)) {
+                        SubBoxHelper.getsInstance(getContext()).addSubBoxToCheckOut(mIdSelected);
+                        return 1;
+                    }else
+                        return 0;
             }
-        });
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(final Object o) {
+            super.onPostExecute(o);
+            if (o instanceof SubBox){
+                //Setup title and configure to automatically scroll sideway if too long
+                mTitleText.setText(((SubBox)o).getName());
+                mTitleText.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+                mTitleText.setSingleLine(true);
+                mTitleText.setMarqueeRepeatLimit(10);
+                mTitleText.setSelected(true);
+
+                Picasso.with(getContext()).load(((SubBox)o).getImgUrl()).resize(200,200).centerCrop().into(detailImage);
+
+                NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault());
+                double priceValue = ((SubBox)o).getPrice();
+                mPriceText.setText(currencyFormat.format(priceValue));
+
+                mDetailText.setText(((SubBox)o).getDescription());
+            }else if (o instanceof Integer) {
+                mDetailButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //Add to checkout and change the text to done
+                        if (((int)o)==1) {
+                            mDetailButton.setText(R.string.detail_in_cart);
+                            Toast.makeText(getContext(), "Added to cart", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }else if (((boolean)o)){
+                mDetailButton.setText(R.string.detail_in_cart);
+            }
+        }
     }
 }

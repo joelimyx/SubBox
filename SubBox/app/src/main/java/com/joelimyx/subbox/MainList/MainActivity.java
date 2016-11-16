@@ -262,11 +262,6 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
     //AsyncArea AREA
     //--------------------------------------------------------------------------------------------------------------------
     class MainAsyncTask extends AsyncTask<Object,Void,List<SubBox> >{
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            Toast.makeText(MainActivity.this, "Loading", Toast.LENGTH_SHORT).show();
-        }
 
         @Override
         protected List<SubBox> doInBackground(Object... objects) {
@@ -289,7 +284,6 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
             mAdapter = new SubBoxAdapter(subBoxes,MainActivity.this,MainActivity.this);
             mAdapter.replaceData(subBoxes);
             mRecyclerView.setAdapter(mAdapter);
-            Toast.makeText(MainActivity.this, "Done", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -297,7 +291,6 @@ public class MainActivity extends AppCompatActivity implements SubBoxAdapter.OnI
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            Toast.makeText(MainActivity.this, "Loading", Toast.LENGTH_SHORT).show();
         }
 
         @Override
